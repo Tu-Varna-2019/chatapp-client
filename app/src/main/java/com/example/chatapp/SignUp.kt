@@ -19,6 +19,11 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.security.MessageDigest
+import java.security.SecureRandom
 
 class SignUp : AppCompatActivity(){
 
@@ -60,12 +65,19 @@ class SignUp : AppCompatActivity(){
             val email = edtEmail.text.toString()
             val password = edtPassword.text.toString()
 
+            val connection = Connection()
+            val base64UserName = connection.base64(userName)
+            val base64Email = connection.base64(email)
+
+            val salt = connection.generateSalt()
+            val hashedPassword = connection.hashPasswordWithSalt(password, salt)
+
             if (userName.isBlank() || email.isBlank() || password.isBlank()) {
                 showToast("Fill the empty field")
             } else {
                 if(isValidEmail(email)){
                    GlobalScope.launch(Dispatchers.Main) {//work with database - reading/writing to files / network calls
-                     val result = performSignUp(userName, email, password)
+                     val result = performSignUp(base64UserName, base64Email, hashedPassword)
                       println("Received from server: $result")
 
                       if (result == "User has registered") {
@@ -99,9 +111,21 @@ class SignUp : AppCompatActivity(){
 
     suspend fun performSignUp(userName: String, email: String, password: String): String {
         val connection = Connection()
-        return connection.connectionMethod("$userName;$email;$password")
-    }
+        // 1 Hash password(sha256)
+        // done 2 Create String JSON "{eventType: 'SignUp', payload: {userName: $userName}}"
+        // done 2.1 In java how to deserialize String json
+        // 3 optional base64 username email password
 
+        val userMap = mapOf(
+            "encodedUserName" to userName,
+            "encodedEmail" to email,
+            "hashedPassword" to password)
+
+        val jsonString = Json.encodeToString(userMap)
+        println("user map - $userMap")
+        println("json string - $jsonString")
+        return connection.connectionMethod(jsonString)
+    }
 
     private fun setValidationForEditText(
         editText: EditText,
