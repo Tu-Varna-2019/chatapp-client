@@ -1,17 +1,13 @@
 package com.example.chatapp
-import android.os.AsyncTask
 import android.content.Intent
-import android.content.pm.PackageManager
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import kotlinx.coroutines.DelicateCoroutinesApi
+
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.BufferedWriter
@@ -19,14 +15,13 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.Socket
 
-class LogIn : AppCompatActivity(){
+class LoginActivity : AppCompatActivity(){
 
     private lateinit var edtEmail: EditText
     private lateinit var edtPassword: EditText
     private lateinit var btnLogin: Button
     private lateinit var btnSignUp: Button
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -37,14 +32,9 @@ class LogIn : AppCompatActivity(){
         btnSignUp = findViewById(R.id.btnSignUp)
 
         btnSignUp.setOnClickListener {
-            val intent = Intent(this, SignUp::class.java)
+            val intent = Intent(this, SignUpActivity::class.java)
             startActivity(Intent(intent))
 
-           /* GlobalScope.launch(Dispatchers.Main) {
-                val result = performNetworkOperation()
-                // Handle the result (e.g., update UI or display a message)
-                println("Received from server: $result")
-            }*/
         }
     }
 
