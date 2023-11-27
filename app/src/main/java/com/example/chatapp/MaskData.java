@@ -1,2 +1,3 @@
-package com.example.chatapp;public class MaskData {
+package com.example.chatapp;
+public class MaskData {
 }

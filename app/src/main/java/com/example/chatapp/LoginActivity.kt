@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity(){
     }
 
 
-
+    // TODO: Implement the login functionality
     private suspend fun performNetworkOperation(): String? = withContext(Dispatchers.IO) {
         val serverAddress = "10.0.2.2"
         val serverPort = 8081
