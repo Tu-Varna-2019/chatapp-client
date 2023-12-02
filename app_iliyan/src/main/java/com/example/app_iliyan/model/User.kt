@@ -1,7 +1,18 @@
 package com.example.app_iliyan.model
 
-class User( var username: String,  var email: String, var password: String) {
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.example.app_iliyan.helpers.MaskData
 
+class User {
+  var username by mutableStateOf("")
+  var email by mutableStateOf("")
+  var password by mutableStateOf("")
 
-
+  fun base64EncodeUser() {
+    username = MaskData.base64Encode(username)
+    email = MaskData.base64Encode(email)
+    password = MaskData.base64Encode(password)
+  }
 }
