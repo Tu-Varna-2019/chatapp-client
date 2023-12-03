@@ -1,5 +1,6 @@
 package com.example.app_iliyan.repository
 
+import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.helpers.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,7 +34,7 @@ class SocketConnection constructor() {
           ?: synchronized(this) { connection ?: SocketConnection().also { connection = it } }
     }
 
-    suspend fun sendAndReceiveData(jsonString: String): String =
+    suspend fun sendAndReceiveData(jsonString: String): ServerResponse =
         withContext(Dispatchers.IO) {
           try {
             val connectionInstance = getConnection()
@@ -50,10 +51,11 @@ class SocketConnection constructor() {
             connectionInstance.reader.close()
             connectionInstance.socket.close()
 
-            serverResponse
+            ServerDataHandler.parseResponse(serverResponse)
           } catch (e: Exception) {
             e.printStackTrace()
-            "Connection failed"
+            ServerDataHandler.parseResponse(
+                "{\"response\":{\"status\":\"Error\",\"message\":\"Socket connection error!\"}}")
           }
         }
   }

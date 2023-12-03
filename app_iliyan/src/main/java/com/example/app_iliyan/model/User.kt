@@ -10,9 +10,10 @@ class User {
   var email by mutableStateOf("")
   var password by mutableStateOf("")
 
-  fun base64EncodeUser() {
-    username = MaskData.base64Encode(username)
-    email = MaskData.base64Encode(email)
-    password = MaskData.base64Encode(password)
+  fun base64EncodeUser(): Array<String> {
+    return arrayOf(
+        MaskData.base64Encode(username),
+        MaskData.base64Encode(email),
+        MaskData.base64Encode(password))
   }
 }
