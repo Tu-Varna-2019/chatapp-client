@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.app_iliyan.helpers.Utils
@@ -46,7 +47,7 @@ class SignUpActivity : ComponentActivity() {
     val userObj = User()
 
     setContent {
-      ScaffoldSnackbar { paddingValues ->
+      ScaffoldSnackbar {
         val context = LocalContext.current
         UserSignUpForm(
             user = userObj,
@@ -113,6 +114,7 @@ fun UserSignUpForm(user: User, onSignUpClick: () -> Unit, onBackClick: () -> Uni
           value = user.password,
           onValueChange = { user.password = it },
           placeholder = { Text("Enter your password") },
+          visualTransformation = PasswordVisualTransformation(),
           isError = isPasswordError,
           modifier = Modifier.fillMaxWidth())
 

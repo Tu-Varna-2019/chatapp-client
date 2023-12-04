@@ -10,48 +10,38 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.Socket
 
-class SocketConnection constructor() {
+class SocketConnection {
 
-  private val SERVER_ADDRESS = "10.0.2.2"
-  private val PORT = 8081
+  companion object {
+    private const val SERVER_ADDRESS = "10.0.2.2"
+    private const val PORT = 8081
 
-  private val socket: Socket by lazy { Socket(SERVER_ADDRESS, PORT) }
+    @Volatile private var instance: SocketConnection? = null
 
-  private val writer: BufferedWriter by lazy {
-    BufferedWriter(OutputStreamWriter(socket.getOutputStream()))
-  }
-
-  private val reader: BufferedReader by lazy {
-    BufferedReader(InputStreamReader(socket.getInputStream()))
-  }
-
-  companion object SocketSingleton {
-
-    @Volatile private var connection: SocketConnection? = null
-
-    private fun getConnection(): SocketConnection {
-      return connection
-          ?: synchronized(this) { connection ?: SocketConnection().also { connection = it } }
+    fun getInstance(): SocketConnection {
+      return instance
+          ?: synchronized(this) { instance ?: SocketConnection().also { instance = it } }
     }
 
     suspend fun sendAndReceiveData(jsonString: String): ServerResponse =
         withContext(Dispatchers.IO) {
           try {
-            val connectionInstance = getConnection()
-            Utils.logger.info("Sending data: $jsonString")
+            Socket(SERVER_ADDRESS, PORT).use { socket ->
+              BufferedWriter(OutputStreamWriter(socket.getOutputStream())).use { writer ->
+                BufferedReader(InputStreamReader(socket.getInputStream())).use { reader ->
+                  Utils.logger.info("Sending data: $jsonString")
 
-            connectionInstance.writer.write(jsonString)
-            connectionInstance.writer.newLine()
-            connectionInstance.writer.flush()
+                  writer.write(jsonString)
+                  writer.newLine()
+                  writer.flush()
 
-            val serverResponse = connectionInstance.reader.readLine()
-            Utils.logger.info("Received from server: $serverResponse")
+                  val serverResponse = reader.readLine()
+                  Utils.logger.info("Received from server: $serverResponse")
 
-            connectionInstance.writer.close()
-            connectionInstance.reader.close()
-            connectionInstance.socket.close()
-
-            ServerDataHandler.parseResponse(serverResponse)
+                  ServerDataHandler.parseResponse(serverResponse)
+                }
+              }
+            }
           } catch (e: Exception) {
             e.printStackTrace()
             ServerDataHandler.parseResponse(
