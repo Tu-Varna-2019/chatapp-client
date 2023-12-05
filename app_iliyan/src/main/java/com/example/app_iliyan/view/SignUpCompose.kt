@@ -44,7 +44,7 @@ class SignUpActivity : ComponentActivity() {
   @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val userObj = User()
+    val userObj = User("", "", "")
 
     setContent {
       ScaffoldSnackbar {
@@ -147,7 +147,7 @@ fun UserSignUpForm(user: User, onSignUpClick: () -> Unit, onBackClick: () -> Uni
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true, name = "Dark Mode")
 @Composable
 fun UserSignUpFormPreview() {
-  val dummyUser = User()
+  val dummyUser = User("", "", "")
   var message by remember { mutableStateOf("") }
   UserSignUpForm(
       user = dummyUser,

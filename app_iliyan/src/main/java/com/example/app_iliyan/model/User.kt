@@ -16,4 +16,10 @@ class User {
         MaskData.base64Encode(email),
         MaskData.base64Encode(password))
   }
+
+  constructor(username: String, email: String, password: String) {
+    this.username = username
+    this.email = email
+    this.password = password
+  }
 }

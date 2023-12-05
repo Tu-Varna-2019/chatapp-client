@@ -40,7 +40,7 @@ class LoginActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    val userObj = User()
+    val userObj = User("", "", "")
 
     setContent {
       SnackbarManager.ScaffoldSnackbar {
@@ -128,7 +128,7 @@ fun UserLoginForm(user: User, onLoginClick: () -> Unit, onGotoSignUpClick: () ->
 @Preview(showBackground = true)
 @Composable
 fun UserLoginFormPreview() {
-  val dummyUser = User()
+  val dummyUser = User("", "", "")
   var message by remember { mutableStateOf("") }
   UserLoginForm(
       user = dummyUser,
