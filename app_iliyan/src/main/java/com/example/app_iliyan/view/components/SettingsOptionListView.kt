@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -31,9 +30,7 @@ import com.example.app_iliyan.model.LocalData
 
 @Composable
 fun SettingsOptionListView() {
-  val context = LocalContext.current
-  val app = context.applicationContext as LocalData
-  val item = app.authenticatedUser
+  val item = LocalData.getAuthenticatedUser()
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Card(

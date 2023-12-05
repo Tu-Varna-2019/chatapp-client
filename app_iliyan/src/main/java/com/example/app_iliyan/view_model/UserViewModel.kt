@@ -63,9 +63,11 @@ class UserViewModel {
           val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
 
           if (server.response.status == "Success") {
-            val app = context.applicationContext as LocalData
-            app.authenticatedUser =
-                server.response.user?.let { User(it.username, server.response.user.email, "") }
+
+            LocalData.setAuthenticatedUser(
+                server.response.user?.username.toString(),
+                server.response.user?.email.toString(),
+            )
 
             val intent = Intent(context, HomeActivity::class.java)
             context.startActivity(intent)

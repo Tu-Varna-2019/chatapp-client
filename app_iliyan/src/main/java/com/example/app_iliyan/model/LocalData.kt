@@ -7,5 +7,21 @@ class LocalData : Application() {
 
   override fun onCreate() {
     super.onCreate()
+    instance = this
+  }
+
+  companion object {
+    private var instance: LocalData? = null
+
+    fun setAuthenticatedUser(
+        username: String,
+        email: String,
+    ) {
+      instance?.authenticatedUser = User(username, email, "")
+    }
+
+    fun getAuthenticatedUser(): User? {
+      return instance?.authenticatedUser
+    }
   }
 }
