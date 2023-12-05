@@ -7,6 +7,7 @@ import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.dataclass.UserData
 import com.example.app_iliyan.dataclass.UserSignUpData
 import com.example.app_iliyan.helpers.MaskData
+import com.example.app_iliyan.model.LocalData
 import com.example.app_iliyan.model.User
 import com.example.app_iliyan.repository.SocketConnection
 import com.example.app_iliyan.view.HomeActivity
@@ -60,11 +61,12 @@ class UserViewModel {
           val jsonString = Json.encodeToString(userSignUpData)
 
           val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
-          println(
-              "Ok now ${server.response.user?.username} , ${server.response.user?.password} , ${server.response.user?.email}",
-          )
 
           if (server.response.status == "Success") {
+            val app = context.applicationContext as LocalData
+            app.authenticatedUser =
+                server.response.user?.let { User(it.username, server.response.user.email, "") }
+
             val intent = Intent(context, HomeActivity::class.java)
             context.startActivity(intent)
             onResult(server.response.message)

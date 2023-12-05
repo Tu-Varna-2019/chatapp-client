@@ -45,6 +45,7 @@ class LoginActivity : ComponentActivity() {
     setContent {
       SnackbarManager.ScaffoldSnackbar {
         val context = LocalContext.current
+        val application = application
         UserLoginForm(
             user = userObj,
             onLoginClick = {
