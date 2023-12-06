@@ -22,18 +22,25 @@ import kotlinx.serialization.json.Json
 class UserViewModel {
 
   companion object {
+    suspend fun encodeAndSendUserDataByEvent(event: String, user: User): ServerResponse {
+
+      val encodedUserCreds = user.base64EncodeUser()
+      val encodedEventType = MaskData.base64Encode(event)
+
+      val userData = UserData(encodedUserCreds[0], encodedUserCreds[1], encodedUserCreds[2])
+      val userSignUpData = UserSignUpData(encodedEventType, userData)
+      val jsonString = Json.encodeToString(userSignUpData)
+
+      val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
+
+      return server
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     fun handleSignUpUserClick(user: User, context: Context, onResult: (String) -> Unit) {
       GlobalScope.launch(Dispatchers.Main) {
         try {
-          val encodedUserCreds = user.base64EncodeUser()
-          val encodedEventType = MaskData.base64Encode("SignUp")
-
-          val userData = UserData(encodedUserCreds[0], encodedUserCreds[1], encodedUserCreds[2])
-          val userSignUpData = UserSignUpData(encodedEventType, userData)
-          val jsonString = Json.encodeToString(userSignUpData)
-
-          val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
+          val server: ServerResponse = encodeAndSendUserDataByEvent("SignUp", user)
 
           if (server.response.status == "Success") {
             val intent = Intent(context, LoginActivity::class.java)
@@ -53,14 +60,7 @@ class UserViewModel {
     fun handleLoginUserClick(user: User, context: Context, onResult: (String) -> Unit) {
       GlobalScope.launch(Dispatchers.Main) {
         try {
-          val encodedUserCreds = user.base64EncodeUser()
-          val encodedEventType = MaskData.base64Encode("Login")
-
-          val userData = UserData(encodedUserCreds[0], encodedUserCreds[1], encodedUserCreds[2])
-          val userSignUpData = UserSignUpData(encodedEventType, userData)
-          val jsonString = Json.encodeToString(userSignUpData)
-
-          val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
+          val server: ServerResponse = encodeAndSendUserDataByEvent("Login", user)
 
           if (server.response.status == "Success") {
 

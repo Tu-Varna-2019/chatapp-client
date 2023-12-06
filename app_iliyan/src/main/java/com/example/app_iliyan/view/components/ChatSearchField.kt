@@ -62,12 +62,11 @@ fun ChatSearchField(items: List<GroupChat>, userOptions: UserOptions) {
           singleLine = true)
       Spacer(modifier = Modifier.height(16.dp))
 
-        DisplayHomeListViewBySelectedTab(
-            userOptions = userOptions,
-            filteredGroupChat = filteredGroupChat,
+      DisplayHomeListViewBySelectedTab(
+          userOptions = userOptions,
+          filteredGroupChat = filteredGroupChat,
           filteredContactChat = filteredContactChat,
-          currentUser =  User("1", "Iliyan", "iliyan")
-      )
+          currentUser = User("1", "Iliyan", "iliyan"))
     }
   }
 }

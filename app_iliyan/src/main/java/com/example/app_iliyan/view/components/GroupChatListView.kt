@@ -34,32 +34,34 @@ fun GroupChatListView(items: List<GroupChat>) {
 
 @Composable
 fun GroupChatItem(item: GroupChat) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-  Card(
-      modifier =
-          Modifier.padding(0.dp)
-              //.width(250.dp)
-              //.clickable {  }
-              .fillMaxSize()
-              .padding(8.dp),
-      elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White))
-  {
-        Row(modifier = Modifier.padding(18.dp)) {
-          Image(
-              painter = painterResource(id = R.drawable.group),
-              contentDescription = item.name,
-              modifier = Modifier.size(40.dp, 40.dp))
+  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Card(
+        modifier =
+            Modifier.padding(0.dp)
+                // .width(250.dp)
+                // .clickable {  }
+                .fillMaxSize()
+                .padding(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)) {
+          Row(modifier = Modifier.padding(18.dp)) {
+            Image(
+                painter = painterResource(id = R.drawable.group),
+                contentDescription = item.name,
+                modifier = Modifier.size(40.dp, 40.dp))
 
-          Spacer(modifier = Modifier.width(16.dp))
-          Column {
-            Text(text = item.name, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+              Text(
+                  text = item.name,
+                  style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+              Spacer(modifier = Modifier.height(8.dp))
 
-            item.users.forEach { user ->
-              Text(user.username, style = TextStyle(fontSize = 10.sp))
+              item.users.forEach { user ->
+                Text(user.username, style = TextStyle(fontSize = 10.sp))
+              }
             }
           }
         }
-      }}
+  }
 }
