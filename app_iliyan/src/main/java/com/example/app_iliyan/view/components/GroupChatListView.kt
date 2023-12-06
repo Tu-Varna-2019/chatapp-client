@@ -1,6 +1,7 @@
 package com.example.app_iliyan.view.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,7 +30,22 @@ import com.example.app_iliyan.model.GroupChat
 
 @Composable
 fun GroupChatListView(items: List<GroupChat>) {
-  LazyColumn { items(items) { item -> GroupChatItem(item) } }
+  if (items.isEmpty()) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+      Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.Center) {
+            Image(
+                painter = painterResource(id = R.drawable.no_chat),
+                contentDescription = "Chat Icon",
+                modifier = Modifier.size(100.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "No group chats yet", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+          }
+    }
+  } else {
+    LazyColumn { items(items) { item -> GroupChatItem(item) } }
+  }
 }
 
 @Composable

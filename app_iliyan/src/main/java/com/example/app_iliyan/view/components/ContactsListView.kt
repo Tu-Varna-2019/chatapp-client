@@ -1,6 +1,7 @@
 package com.example.app_iliyan.view.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,45 +22,59 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.app_iliyan.R
 import com.example.app_iliyan.model.FriendRequest
 
-    @Composable
-    fun ContactsListView(items: List<FriendRequest>) {
-        LazyColumn { items(items) { item -> ContactsItem(item) } }
+@Composable
+fun ContactsListView(items: List<FriendRequest>) {
+  if (items.isEmpty()) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+      Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.Center) {
+            Image(
+                painter = painterResource(id = R.drawable.no_contact),
+                contentDescription = "Chat Icon",
+                modifier = Modifier.size(100.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "No contacts yet", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+          }
     }
+  } else {
+    LazyColumn { items(items) { item -> ContactsItem(item) } }
+  }
+}
 
-    @Composable
-    fun ContactsItem(item: FriendRequest) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Card(
-                modifier =
-                Modifier.padding(0.dp)
-                    //.width(250.dp)
-                    //.clickable {  }
-                    .fillMaxSize()
-                    .padding(8.dp),
-                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White))
-            {
-                Row(modifier = Modifier.padding(18.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.user),
-                        contentDescription = item.status,
-                        modifier = Modifier.size(40.dp, 40.dp))
+@Composable
+fun ContactsItem(item: FriendRequest) {
+  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Card(
+        modifier =
+            Modifier.padding(0.dp)
+                // .width(250.dp)
+                // .clickable {  }
+                .fillMaxSize()
+                .padding(8.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)) {
+          Row(modifier = Modifier.padding(18.dp)) {
+            Image(
+                painter = painterResource(id = R.drawable.user),
+                contentDescription = item.status,
+                modifier = Modifier.size(40.dp, 40.dp))
 
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column {
-//                        Text(text = item.name, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
-                        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+              //                        Text(text = item.name, style = TextStyle(fontSize = 18.sp,
+              // fontWeight = FontWeight.Bold))
+              Spacer(modifier = Modifier.height(8.dp))
 
-                            Text(item.receiver.username, style = TextStyle(fontSize = 10.sp))
-                    }
-                }
+              Text(item.receiver.username, style = TextStyle(fontSize = 10.sp))
             }
+          }
         }
-    }
-
-
+  }
+}

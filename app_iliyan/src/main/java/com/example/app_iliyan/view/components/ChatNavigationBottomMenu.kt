@@ -33,7 +33,7 @@ import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.view_model.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("CoroutineCreationDuringComposition", "UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ChatNavigationBottomMenu(items: List<GroupChat>, userOptions: UserOptions) {
   var showMenu by remember { mutableStateOf(false) }

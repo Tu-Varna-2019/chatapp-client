@@ -26,14 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
-import com.example.app_iliyan.model.User
 import com.example.app_iliyan.model.state.UserOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("CoroutineCreationDuringComposition", "UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ChatSearchField(items: List<GroupChat>, userOptions: UserOptions) {
-  // Reduce Group chat based on search field
   val filteredGroupChat =
       items.filter { it.name.contains(userOptions.searchText, ignoreCase = true) }
   val filteredContactChat: List<FriendRequest> = listOf()
@@ -65,8 +63,7 @@ fun ChatSearchField(items: List<GroupChat>, userOptions: UserOptions) {
       DisplayHomeListViewBySelectedTab(
           userOptions = userOptions,
           filteredGroupChat = filteredGroupChat,
-          filteredContactChat = filteredContactChat,
-          currentUser = User("1", "Iliyan", "iliyan"))
+          filteredContactChat = filteredContactChat)
     }
   }
 }
