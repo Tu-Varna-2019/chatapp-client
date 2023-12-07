@@ -31,10 +31,17 @@ import com.example.app_iliyan.model.state.UserOptions
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ChatSearchField(items: List<GroupChat>, userOptions: UserOptions) {
+fun ChatSearchField(
+    groupchatList: List<GroupChat>,
+    friendrequestList: List<FriendRequest>,
+    userOptions: UserOptions
+) {
+
+  // Filter the group chat list / contacts  by the search text
   val filteredGroupChat =
-      items.filter { it.name.contains(userOptions.searchText, ignoreCase = true) }
-  val filteredContactChat: List<FriendRequest> = listOf()
+      groupchatList.filter { it.name.contains(userOptions.searchText, ignoreCase = true) }
+  val filteredContactChat: List<FriendRequest> =
+      friendrequestList.filter { it.status.contains(userOptions.searchText, ignoreCase = true) }
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     Text(
@@ -42,22 +49,27 @@ fun ChatSearchField(items: List<GroupChat>, userOptions: UserOptions) {
         color = Color.Black,
         style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.SemiBold))
     Column(modifier = Modifier.fillMaxWidth().padding(25.dp)) {
-      TextField(
-          value = userOptions.searchText,
-          onValueChange = { newText -> userOptions.searchText = newText },
-          modifier = Modifier.fillMaxWidth().padding(16.dp).fillMaxWidth(0.8f),
-          shape = RoundedCornerShape(22.dp),
-          leadingIcon = {
-            Icon(imageVector = Icons.Default.Search, contentDescription = "Search here")
-          },
-          label = { Text("Search something...") },
-          colors =
-              TextFieldDefaults.textFieldColors(
-                  containerColor = Color(red = 234, green = 221, blue = 255),
-                  cursorColor = Color.Black,
-                  focusedIndicatorColor = Color.Transparent,
-                  unfocusedIndicatorColor = Color.Transparent),
-          singleLine = true)
+
+      // Hide the search field if the selected tab is "Settings"
+      if (userOptions.selectedTab != "Settings") {
+
+        TextField(
+            value = userOptions.searchText,
+            onValueChange = { newText -> userOptions.searchText = newText },
+            modifier = Modifier.fillMaxWidth().padding(16.dp).fillMaxWidth(0.8f),
+            shape = RoundedCornerShape(22.dp),
+            leadingIcon = {
+              Icon(imageVector = Icons.Default.Search, contentDescription = "Search here")
+            },
+            label = { Text("Search something...") },
+            colors =
+                TextFieldDefaults.textFieldColors(
+                    containerColor = Color(red = 234, green = 221, blue = 255),
+                    cursorColor = Color.Black,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent),
+            singleLine = true)
+      }
       Spacer(modifier = Modifier.height(16.dp))
 
       DisplayHomeListViewBySelectedTab(

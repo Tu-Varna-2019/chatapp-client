@@ -9,3 +9,8 @@ import kotlinx.serialization.Serializable
 @Serializable data class GroupChatDataClass(val groupchat: GroupChatData)
 
 @Serializable data class GroupChatData(val id: Int, val name: String, val users: List<UserData>)
+
+@Serializable data class FriendRequestDataClass(val friendrequest: FriendRequestData)
+
+@Serializable
+data class FriendRequestData(val id: Int, val status: String, val recipient: UserData)

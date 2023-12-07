@@ -9,5 +9,6 @@ data class ResponseContent(
     val status: String,
     val message: String,
     val user: UserData? = null,
-    val groupchats: List<GroupChatDataClass>? = null
+    val groupchats: List<GroupChatDataClass>? = null,
+    val friendrequests: List<FriendRequestDataClass>? = null
 )

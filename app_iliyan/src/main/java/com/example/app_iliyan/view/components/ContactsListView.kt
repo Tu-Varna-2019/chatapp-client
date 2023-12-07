@@ -50,6 +50,20 @@ fun ContactsListView(items: List<FriendRequest>) {
 
 @Composable
 fun ContactsItem(item: FriendRequest) {
+  var statusColor: Color
+  var imageStatus: Int
+
+  if (item.status == "Pending") {
+    statusColor = Color.Black
+    imageStatus = R.drawable.pending
+  } else if (item.status == "Accepted") {
+    statusColor = Color.Green
+    imageStatus = R.drawable.accepted
+  } else {
+    statusColor = Color.Red
+    imageStatus = R.drawable.rejected
+  }
+
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Card(
         modifier =
@@ -62,17 +76,23 @@ fun ContactsItem(item: FriendRequest) {
         colors = CardDefaults.cardColors(containerColor = Color.White)) {
           Row(modifier = Modifier.padding(18.dp)) {
             Image(
-                painter = painterResource(id = R.drawable.user),
+                painter =
+                    painterResource(
+                        // Display the correct icon based on the status of the friend request
+                        id = imageStatus),
                 contentDescription = item.status,
                 modifier = Modifier.size(40.dp, 40.dp))
 
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-              //                        Text(text = item.name, style = TextStyle(fontSize = 18.sp,
-              // fontWeight = FontWeight.Bold))
+              Text(
+                  text = item.status,
+                  style =
+                      TextStyle(
+                          fontSize = 18.sp, fontWeight = FontWeight.Bold, color = statusColor))
               Spacer(modifier = Modifier.height(8.dp))
 
-              Text(item.receiver.username, style = TextStyle(fontSize = 10.sp))
+              Text("Recipient: " + item.recipient.email, style = TextStyle(fontSize = 14.sp))
             }
           }
         }

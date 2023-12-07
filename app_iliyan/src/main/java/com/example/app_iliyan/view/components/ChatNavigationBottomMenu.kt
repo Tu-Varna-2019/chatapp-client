@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.view_model.HomeViewModel
@@ -35,7 +36,11 @@ import com.example.app_iliyan.view_model.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ChatNavigationBottomMenu(items: List<GroupChat>, userOptions: UserOptions) {
+fun ChatNavigationBottomMenu(
+    groupchatList: List<GroupChat>,
+    friendrequestList: List<FriendRequest>,
+    userOptions: UserOptions
+) {
   var showMenu by remember { mutableStateOf(false) }
 
   Scaffold(
@@ -70,10 +75,14 @@ fun ChatNavigationBottomMenu(items: List<GroupChat>, userOptions: UserOptions) {
       },
       floatingActionButton = {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
-          FloatingActionButton(
-              onClick = { showMenu = !showMenu }, modifier = Modifier.padding(16.dp)) {
-                Icon(Icons.Filled.Add, contentDescription = "Add")
-              }
+
+          // Hide + button if user is in Settings tab
+          if (userOptions.selectedTab != "Settings") {
+            FloatingActionButton(
+                onClick = { showMenu = !showMenu }, modifier = Modifier.padding(16.dp)) {
+                  Icon(Icons.Filled.Add, contentDescription = "Add")
+                }
+          }
 
           MaterialTheme(
               colorScheme =
@@ -94,6 +103,9 @@ fun ChatNavigationBottomMenu(items: List<GroupChat>, userOptions: UserOptions) {
               }
         }
       }) {
-        ChatSearchField(items = items, userOptions = userOptions)
+        ChatSearchField(
+            groupchatList = groupchatList,
+            friendrequestList = friendrequestList,
+            userOptions = userOptions)
       }
 }

@@ -8,7 +8,9 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
+import com.example.app_iliyan.model.User
 import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.view.components.ChatNavigationBottomMenu
 import com.example.app_iliyan.view.components.SnackbarManager.ScaffoldSnackbar
@@ -26,8 +28,14 @@ class HomeActivity : ComponentActivity() {
       val groupchatListState = viewModel.groupChats.collectAsState()
       viewModel.loadGroupChats()
 
+      val friendrequestListState = viewModel.friendRequests.collectAsState()
+      viewModel.loadGroupChats()
+
       ScaffoldSnackbar {
-        HomeLayout(groupchatList = groupchatListState.value, userOptions = userOptionsObj)
+        HomeLayout(
+            groupchatList = groupchatListState.value,
+            friendrequestList = friendrequestListState.value,
+            userOptions = userOptionsObj)
       }
     }
   }
@@ -35,8 +43,15 @@ class HomeActivity : ComponentActivity() {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeLayout(groupchatList: List<GroupChat>, userOptions: UserOptions = UserOptions("", "Chat")) {
-  ChatNavigationBottomMenu(items = groupchatList, userOptions = userOptions)
+fun HomeLayout(
+    groupchatList: List<GroupChat>,
+    friendrequestList: List<FriendRequest>,
+    userOptions: UserOptions = UserOptions("", "Chat")
+) {
+  ChatNavigationBottomMenu(
+      groupchatList = groupchatList,
+      friendrequestList = friendrequestList,
+      userOptions = userOptions)
 }
 
 @Preview(showBackground = true)
@@ -51,5 +66,14 @@ fun HomeLayoutPreview() {
           GroupChat("Group 5", listOf()),
           GroupChat("Group 6", listOf()))
 
-  HomeLayout(groupchatList = groupchatList)
+  val friendrequestList: List<FriendRequest> =
+      listOf(
+          FriendRequest("Friend 1", User("1", "1", "1")),
+          FriendRequest("Friend 2", User("2", "2", "2")),
+          FriendRequest("Friend 3", User("3", "3", "3")),
+          FriendRequest("Friend 4", User("4", "4", "4")),
+          FriendRequest("Friend 5", User("5", "5", "5")),
+          FriendRequest("Friend 6", User("6", "6", "6")))
+
+  HomeLayout(groupchatList = groupchatList, friendrequestList = friendrequestList)
 }

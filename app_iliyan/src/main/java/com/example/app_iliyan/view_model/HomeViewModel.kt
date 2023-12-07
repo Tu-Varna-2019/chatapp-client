@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.helpers.Utils
+import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.LocalData
 import com.example.app_iliyan.model.state.UserOptions
@@ -17,13 +18,21 @@ class HomeViewModel : ViewModel() {
   private val _groupChats = MutableStateFlow<List<GroupChat>>(emptyList())
   val groupChats: StateFlow<List<GroupChat>> = _groupChats
 
+  private val _friendRequests = MutableStateFlow<List<FriendRequest>>(emptyList())
+  val friendRequests: StateFlow<List<FriendRequest>> = _friendRequests
+
   fun loadGroupChats() {
     viewModelScope.launch(Dispatchers.Main) {
       try {
+
+        // Group chat
         val fetchGroupChat = getAllGroupChatsAuthUser()
         _groupChats.value = fetchGroupChat
+        // Friend request
+        val fetchFriendRequest = getAllFriendRequestsAuthUser()
+        _friendRequests.value = fetchFriendRequest
       } catch (e: Exception) {
-        Utils.logger.error("HomeViewModel", "Error fetching group chats", e)
+        Utils.logger.error("HomeViewModel", "Error fetching group chats/friend requests!", e)
       }
     }
   }
@@ -44,6 +53,30 @@ class HomeViewModel : ViewModel() {
         return groupchatList
       } else {
         Utils.logger.warn("getAllGroupChatsAuthUser: Not Chat Groups Found")
+        return emptyList()
+      }
+    } catch (e: Exception) {
+      Utils.logger.error("getAllGroupChatsAuthUser: {}", e.message.toString())
+    }
+    return emptyList()
+  }
+
+  private suspend fun getAllFriendRequestsAuthUser(): List<FriendRequest> {
+    try {
+      val server: ServerResponse =
+          UserViewModel.encodeAndSendUserDataByEvent(
+              "GetFriendRequestsAuthUser", LocalData.getAuthenticatedUser()!!)
+
+      if (server.response.status == "Success" && server.response.friendrequests != null) {
+
+        val friendrequestList =
+            server.response.friendrequests.map { friendrequestData ->
+              ServerDataHandler.convertFriendRequestDataToModel(friendrequestData.friendrequest)
+            }
+
+        return friendrequestList
+      } else {
+        Utils.logger.warn("GetFriendRequestsAuthUser: No Friend requests Found")
         return emptyList()
       }
     } catch (e: Exception) {

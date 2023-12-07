@@ -3,14 +3,13 @@ package com.example.app_iliyan.view.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -34,51 +33,71 @@ fun SettingsOptionListView() {
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Card(
-        modifier =
-            Modifier.padding(0.dp)
-                // .width(250.dp)
-                // .clickable {  }
-                .fillMaxSize()
-                .padding(8.dp),
+        modifier = Modifier.padding(0.dp).fillMaxSize().padding(8.dp),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)) {
-          Column {
-            Image(
-                painter = painterResource(id = R.drawable.user),
-                contentDescription = item?.username,
-                alignment = Alignment.CenterStart,
-                modifier = Modifier.size(70.dp, 70.dp))
+        colors =
+            CardDefaults.cardColors(containerColor = Color.White, contentColor = Color.LightGray),
+        shape = RoundedCornerShape(8.dp)) {
+          Column(
+              modifier = Modifier.fillMaxSize(),
+              horizontalAlignment = Alignment.CenterHorizontally) {
+                Spacer(modifier = Modifier.height(100.dp))
 
-            Spacer(modifier = Modifier.width(16.dp))
-            Column {
-              Row(modifier = Modifier.padding(18.dp)) {
+                Image(
+                    painter = painterResource(id = R.drawable.user),
+                    contentDescription = item?.username,
+                    modifier = Modifier.size(100.dp, 100.dp))
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = "Username: " + item?.username,
-                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+                    style =
+                        TextStyle(
+                            fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black),
+                    modifier = Modifier.align(Alignment.CenterHorizontally))
 
-                Text(text = "Edit", style = TextStyle(fontSize = 18.sp, color = Color.Blue))
-              }
-              Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Edit",
+                    style = TextStyle(fontSize = 18.sp, color = Color.Blue),
+                    modifier = Modifier.align(Alignment.CenterHorizontally))
 
-              Row(modifier = Modifier.padding(18.dp)) {
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
                     text = "Email: " + item?.email,
-                    style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+                    style =
+                        TextStyle(
+                            fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black),
+                    modifier = Modifier.align(Alignment.CenterHorizontally))
 
-                Text(text = "Edit", style = TextStyle(fontSize = 18.sp, color = Color.Blue))
+                Text(
+                    text = "Edit",
+                    style = TextStyle(fontSize = 18.sp, color = Color.Blue),
+                    modifier = Modifier.align(Alignment.CenterHorizontally))
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Edit password",
+                    style = TextStyle(fontSize = 18.sp, color = Color.Blue),
+                    modifier = Modifier.align(Alignment.CenterHorizontally))
+
+                Spacer(modifier = Modifier.height(80.dp))
+
+                Button(
+                    onClick = { /*TODO*/},
+                    modifier = Modifier.fillMaxWidth(0.5f).align(Alignment.CenterHorizontally)) {
+                      Text("Log out")
+                    }
+
+                Button(
+                    onClick = { /*TODO*/},
+                    modifier = Modifier.fillMaxWidth(0.5f).align(Alignment.CenterHorizontally),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
+                      Text("Delete account")
+                    }
               }
-              Spacer(modifier = Modifier.height(80.dp))
-
-              Button(onClick = { /*TODO*/}, modifier = Modifier.fillMaxWidth()) { Text("Log out") }
-
-              Button(
-                  onClick = { /*TODO*/},
-                  modifier = Modifier.fillMaxWidth(),
-                  colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
-                    Text("Delete account")
-                  }
-            }
-          }
         }
   }
 }
