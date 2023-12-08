@@ -36,7 +36,6 @@ fun ChatSearchField(
     friendrequestList: List<FriendRequest>,
     userOptions: UserOptions
 ) {
-
   // Filter the group chat list / contacts  by the search text
   val filteredGroupChat =
       groupchatList.filter { it.name.contains(userOptions.searchText, ignoreCase = true) }
@@ -72,10 +71,18 @@ fun ChatSearchField(
       }
       Spacer(modifier = Modifier.height(16.dp))
 
-      DisplayHomeListViewBySelectedTab(
-          userOptions = userOptions,
-          filteredGroupChat = filteredGroupChat,
-          filteredContactChat = filteredContactChat)
+      // Display filtered list by selected tab
+      when (userOptions.selectedTab) {
+        "Chat" -> {
+          GroupChatListView(items = filteredGroupChat)
+        }
+        "Contacts" -> {
+          ContactsListView(items = filteredContactChat)
+        }
+        "Settings" -> {
+          SettingsOptionListView()
+        }
+      }
     }
   }
 }
