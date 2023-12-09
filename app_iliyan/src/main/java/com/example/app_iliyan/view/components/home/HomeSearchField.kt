@@ -1,6 +1,5 @@
-package com.example.app_iliyan.view.components
+package com.example.app_iliyan.view.components.home
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,58 +28,60 @@ import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.state.UserOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ChatSearchField(
-    groupchatList: List<GroupChat>,
-    friendrequestList: List<FriendRequest>,
-    userOptions: UserOptions
+fun HomeSearchField(
+  groupchatList: List<GroupChat>,
+  friendrequestList: List<FriendRequest>,
+  userOptions: UserOptions
 ) {
   // Filter the group chat list / contacts  by the search text
   val filteredGroupChat =
-      groupchatList.filter { it.name.contains(userOptions.searchText, ignoreCase = true) }
+    groupchatList.filter { it.name.contains(userOptions.searchText, ignoreCase = true) }
   val filteredContactChat: List<FriendRequest> =
-      friendrequestList.filter { it.status.contains(userOptions.searchText, ignoreCase = true) }
+    friendrequestList.filter { it.status.contains(userOptions.searchText, ignoreCase = true) }
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     Text(
-        text = userOptions.selectedTab,
-        color = Color.Black,
-        style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.SemiBold))
+      text = userOptions.selectedTab,
+      color = Color.Black,
+      style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.SemiBold)
+    )
     Column(modifier = Modifier.fillMaxWidth().padding(25.dp)) {
 
       // Hide the search field if the selected tab is "Settings"
       if (userOptions.selectedTab != "Settings") {
 
         TextField(
-            value = userOptions.searchText,
-            onValueChange = { newText -> userOptions.searchText = newText },
-            modifier = Modifier.fillMaxWidth().padding(16.dp).fillMaxWidth(0.8f),
-            shape = RoundedCornerShape(22.dp),
-            leadingIcon = {
-              Icon(imageVector = Icons.Default.Search, contentDescription = "Search here")
-            },
-            label = { Text("Search something...") },
-            colors =
-                TextFieldDefaults.textFieldColors(
-                    containerColor = Color(red = 234, green = 221, blue = 255),
-                    cursorColor = Color.Black,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent),
-            singleLine = true)
+          value = userOptions.searchText,
+          onValueChange = { newText -> userOptions.searchText = newText },
+          modifier = Modifier.fillMaxWidth().padding(16.dp).fillMaxWidth(0.8f),
+          shape = RoundedCornerShape(22.dp),
+          leadingIcon = {
+            Icon(imageVector = Icons.Default.Search, contentDescription = "Search here")
+          },
+          label = { Text("Search something...") },
+          colors =
+            TextFieldDefaults.textFieldColors(
+              containerColor = Color(red = 234, green = 221, blue = 255),
+              cursorColor = Color.Black,
+              focusedIndicatorColor = Color.Transparent,
+              unfocusedIndicatorColor = Color.Transparent
+            ),
+          singleLine = true
+        )
       }
       Spacer(modifier = Modifier.height(16.dp))
 
       // Display filtered list by selected tab
       when (userOptions.selectedTab) {
         "Chat" -> {
-          GroupChatListView(items = filteredGroupChat)
+          GroupChatList(items = filteredGroupChat)
         }
         "Contacts" -> {
-          ContactsListView(items = filteredContactChat)
+          ContactList(items = filteredContactChat)
         }
         "Settings" -> {
-          SettingsOptionListView()
+          SettingsOptionList()
         }
       }
     }

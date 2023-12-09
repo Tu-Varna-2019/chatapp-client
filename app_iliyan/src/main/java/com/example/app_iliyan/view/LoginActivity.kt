@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.User
-import com.example.app_iliyan.view.components.SnackbarManager
+import com.example.app_iliyan.view.components.dialog_box.SnackbarManager
 import com.example.app_iliyan.view_model.UserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

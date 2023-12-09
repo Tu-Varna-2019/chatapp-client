@@ -16,13 +16,6 @@ class SocketConnection {
     private const val SERVER_ADDRESS = "10.0.2.2"
     private const val PORT = 8081
 
-    @Volatile private var instance: SocketConnection? = null
-
-    fun getInstance(): SocketConnection {
-      return instance
-        ?: synchronized(this) { instance ?: SocketConnection().also { instance = it } }
-    }
-
     suspend fun sendAndReceiveData(jsonString: String): ServerResponse =
       withContext(Dispatchers.IO) {
         try {

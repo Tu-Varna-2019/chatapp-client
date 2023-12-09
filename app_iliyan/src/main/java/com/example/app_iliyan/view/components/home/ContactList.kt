@@ -1,4 +1,4 @@
-package com.example.app_iliyan.view.components
+package com.example.app_iliyan.view.components.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -26,10 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.app_iliyan.R
-import com.example.app_iliyan.model.GroupChat
+import com.example.app_iliyan.model.FriendRequest
 
 @Composable
-fun GroupChatListView(items: List<GroupChat>) {
+fun ContactList(items: List<FriendRequest>) {
   if (items.isEmpty()) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
       Column(
@@ -37,21 +37,35 @@ fun GroupChatListView(items: List<GroupChat>) {
         verticalArrangement = Arrangement.Center
       ) {
         Image(
-          painter = painterResource(id = R.drawable.no_chat),
+          painter = painterResource(id = R.drawable.no_contact),
           contentDescription = "Chat Icon",
           modifier = Modifier.size(100.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "No group chats yet", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        Text(text = "No contacts yet", fontSize = 20.sp, fontWeight = FontWeight.Bold)
       }
     }
   } else {
-    LazyColumn { items(items) { item -> GroupChatItem(item) } }
+    LazyColumn { items(items) { item -> ContactItem(item) } }
   }
 }
 
 @Composable
-fun GroupChatItem(item: GroupChat) {
+fun ContactItem(item: FriendRequest) {
+  var statusColor: Color
+  var imageStatus: Int
+
+  if (item.status == "Pending") {
+    statusColor = Color.Black
+    imageStatus = R.drawable.pending
+  } else if (item.status == "Accepted") {
+    statusColor = Color.Green
+    imageStatus = R.drawable.accepted
+  } else {
+    statusColor = Color.Red
+    imageStatus = R.drawable.rejected
+  }
+
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Card(
       modifier =
@@ -65,17 +79,24 @@ fun GroupChatItem(item: GroupChat) {
     ) {
       Row(modifier = Modifier.padding(18.dp)) {
         Image(
-          painter = painterResource(id = R.drawable.group),
-          contentDescription = item.name,
+          painter =
+            painterResource(
+              // Display the correct icon based on the status of the friend request
+              id = imageStatus
+            ),
+          contentDescription = item.status,
           modifier = Modifier.size(40.dp, 40.dp)
         )
 
         Spacer(modifier = Modifier.width(16.dp))
         Column {
-          Text(text = item.name, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+          Text(
+            text = item.status,
+            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, color = statusColor)
+          )
           Spacer(modifier = Modifier.height(8.dp))
 
-          item.users.forEach { user -> Text(user.username, style = TextStyle(fontSize = 10.sp)) }
+          Text("Recipient: " + item.recipient.email, style = TextStyle(fontSize = 14.sp))
         }
       }
     }

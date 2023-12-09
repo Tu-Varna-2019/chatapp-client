@@ -1,4 +1,4 @@
-package com.example.app_iliyan.view.components
+package com.example.app_iliyan.view.components.dialog_box
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button

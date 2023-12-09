@@ -1,4 +1,4 @@
-package com.example.app_iliyan.view.components
+package com.example.app_iliyan.view.components.dialog_box
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,7 +18,7 @@ object SnackbarManager {
   @OptIn(ExperimentalMaterial3Api::class)
   @Composable
   fun ScaffoldSnackbar(content: @Composable (PaddingValues) -> Unit) {
-    Scaffold(snackbarHost = { SnackbarHost(SnackbarManager.snackbarHostState) }) { paddingValues ->
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
       content(paddingValues)
     }
   }

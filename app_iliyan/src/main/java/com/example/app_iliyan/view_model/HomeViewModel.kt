@@ -1,5 +1,6 @@
 package com.example.app_iliyan.view_model
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app_iliyan.dataclass.ServerResponse
@@ -15,16 +16,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
+  val logoutEvent = MutableLiveData<Boolean>()
   private val _groupChats = MutableStateFlow<List<GroupChat>>(emptyList())
   val groupChats: StateFlow<List<GroupChat>> = _groupChats
 
   private val _friendRequests = MutableStateFlow<List<FriendRequest>>(emptyList())
   val friendRequests: StateFlow<List<FriendRequest>> = _friendRequests
 
-  fun loadGroupChats() {
+  fun fetchGroupChatsFriendRequests() {
     viewModelScope.launch(Dispatchers.Main) {
       try {
-
         // Group chat
         val fetchGroupChat = getAllGroupChatsAuthUser()
         _groupChats.value = fetchGroupChat
@@ -37,18 +38,28 @@ class HomeViewModel : ViewModel() {
     }
   }
 
+  fun handleLogoutClick() {
+    LocalData.setAuthenticatedUser(
+      "",
+      "",
+    )
+    logoutEvent.value = true
+  }
+
   private suspend fun getAllGroupChatsAuthUser(): List<GroupChat> {
     try {
       val server: ServerResponse =
-          UserViewModel.encodeAndSendUserDataByEvent(
-              "GetGroupChatsAuthUser", LocalData.getAuthenticatedUser()!!)
+        UserViewModel.encodeAndSendUserDataByEvent(
+          "GetGroupChatsAuthUser",
+          LocalData.getAuthenticatedUser()!!
+        )
 
       if (server.response.status == "Success" && server.response.groupchats != null) {
 
         val groupchatList =
-            server.response.groupchats.map { groupChatData ->
-              ServerDataHandler.convertGroupChatDataToModel(groupChatData.groupchat)
-            }
+          server.response.groupchats.map { groupChatData ->
+            ServerDataHandler.convertGroupChatDataToModel(groupChatData.groupchat)
+          }
 
         return groupchatList
       } else {
@@ -64,15 +75,17 @@ class HomeViewModel : ViewModel() {
   private suspend fun getAllFriendRequestsAuthUser(): List<FriendRequest> {
     try {
       val server: ServerResponse =
-          UserViewModel.encodeAndSendUserDataByEvent(
-              "GetFriendRequestsAuthUser", LocalData.getAuthenticatedUser()!!)
+        UserViewModel.encodeAndSendUserDataByEvent(
+          "GetFriendRequestsAuthUser",
+          LocalData.getAuthenticatedUser()!!
+        )
 
       if (server.response.status == "Success" && server.response.friendrequests != null) {
 
         val friendrequestList =
-            server.response.friendrequests.map { friendrequestData ->
-              ServerDataHandler.convertFriendRequestDataToModel(friendrequestData.friendrequest)
-            }
+          server.response.friendrequests.map { friendrequestData ->
+            ServerDataHandler.convertFriendRequestDataToModel(friendrequestData.friendrequest)
+          }
 
         return friendrequestList
       } else {
