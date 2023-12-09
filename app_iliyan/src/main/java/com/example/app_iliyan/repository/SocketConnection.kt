@@ -20,33 +20,34 @@ class SocketConnection {
 
     fun getInstance(): SocketConnection {
       return instance
-          ?: synchronized(this) { instance ?: SocketConnection().also { instance = it } }
+        ?: synchronized(this) { instance ?: SocketConnection().also { instance = it } }
     }
 
     suspend fun sendAndReceiveData(jsonString: String): ServerResponse =
-        withContext(Dispatchers.IO) {
-          try {
-            Socket(SERVER_ADDRESS, PORT).use { socket ->
-              BufferedWriter(OutputStreamWriter(socket.getOutputStream())).use { writer ->
-                BufferedReader(InputStreamReader(socket.getInputStream())).use { reader ->
-                  Utils.logger.info("Sending data: $jsonString")
+      withContext(Dispatchers.IO) {
+        try {
+          Socket(SERVER_ADDRESS, PORT).use { socket ->
+            BufferedWriter(OutputStreamWriter(socket.getOutputStream())).use { writer ->
+              BufferedReader(InputStreamReader(socket.getInputStream())).use { reader ->
+                Utils.logger.info("Sending data: $jsonString")
 
-                  writer.write(jsonString)
-                  writer.newLine()
-                  writer.flush()
+                writer.write(jsonString)
+                writer.newLine()
+                writer.flush()
 
-                  val serverResponse = reader.readLine()
-                  Utils.logger.info("Received from server: $serverResponse")
+                val serverResponse = reader.readLine()
+                Utils.logger.info("Received from server: $serverResponse")
 
-                  ServerDataHandler.parseResponse(serverResponse)
-                }
+                ServerDataHandler.parseResponse(serverResponse)
               }
             }
-          } catch (e: Exception) {
-            e.printStackTrace()
-            ServerDataHandler.parseResponse(
-                "{\"response\":{\"status\":\"Error\",\"message\":\"Socket connection error!\"}}")
           }
+        } catch (e: Exception) {
+          Utils.logger.error("Error: SocketConnection: {}", e.printStackTrace())
+          ServerDataHandler.parseResponse(
+            "{\"response\":{\"status\":\"Error\",\"message\":\"Socket connection error!\"}}"
+          )
         }
+      }
   }
 }
