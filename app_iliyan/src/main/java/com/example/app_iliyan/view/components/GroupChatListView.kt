@@ -33,15 +33,17 @@ fun GroupChatListView(items: List<GroupChat>) {
   if (items.isEmpty()) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
       Column(
-          horizontalAlignment = Alignment.CenterHorizontally,
-          verticalArrangement = Arrangement.Center) {
-            Image(
-                painter = painterResource(id = R.drawable.no_chat),
-                contentDescription = "Chat Icon",
-                modifier = Modifier.size(100.dp))
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "No group chats yet", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-          }
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+      ) {
+        Image(
+          painter = painterResource(id = R.drawable.no_chat),
+          contentDescription = "Chat Icon",
+          modifier = Modifier.size(100.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = "No group chats yet", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+      }
     }
   } else {
     LazyColumn { items(items) { item -> GroupChatItem(item) } }
@@ -52,32 +54,30 @@ fun GroupChatListView(items: List<GroupChat>) {
 fun GroupChatItem(item: GroupChat) {
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Card(
-        modifier =
-            Modifier.padding(0.dp)
-                // .width(250.dp)
-                // .clickable {  }
-                .fillMaxSize()
-                .padding(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)) {
-          Row(modifier = Modifier.padding(18.dp)) {
-            Image(
-                painter = painterResource(id = R.drawable.group),
-                contentDescription = item.name,
-                modifier = Modifier.size(40.dp, 40.dp))
+      modifier =
+        Modifier.padding(0.dp)
+          // .width(250.dp)
+          // .clickable {  }
+          .fillMaxSize()
+          .padding(8.dp),
+      elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+      colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+      Row(modifier = Modifier.padding(18.dp)) {
+        Image(
+          painter = painterResource(id = R.drawable.group),
+          contentDescription = item.name,
+          modifier = Modifier.size(40.dp, 40.dp)
+        )
 
-            Spacer(modifier = Modifier.width(16.dp))
-            Column {
-              Text(
-                  text = item.name,
-                  style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
-              Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.width(16.dp))
+        Column {
+          Text(text = item.name, style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+          Spacer(modifier = Modifier.height(8.dp))
 
-              item.users.forEach { user ->
-                Text(user.username, style = TextStyle(fontSize = 10.sp))
-              }
-            }
-          }
+          item.users.forEach { user -> Text(user.username, style = TextStyle(fontSize = 10.sp)) }
         }
+      }
+    }
   }
 }
