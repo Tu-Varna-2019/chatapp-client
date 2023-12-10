@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,15 +27,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.User
+import com.example.app_iliyan.navigation.LoginRegisterNavigationHandler
 import com.example.app_iliyan.view.components.dialog_box.SnackbarManager
 import com.example.app_iliyan.view.components.dialog_box.SnackbarManager.ScaffoldSnackbar
-import com.example.app_iliyan.view_model.UserViewModel
+import com.example.app_iliyan.view_model.LoginRegisterViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,26 +45,37 @@ class SignUpActivity : ComponentActivity() {
   @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    val loginRegisterNavigationHandler = LoginRegisterNavigationHandler()
+    val loginRegisterViewModel: LoginRegisterViewModel by viewModels()
     val userObj = User("", "", "")
 
     setContent {
       ScaffoldSnackbar {
-        val context = LocalContext.current
         UserSignUpForm(
-            user = userObj,
-            onSignUpClick = {
-              UserViewModel.handleSignUpUserClick(userObj, context) { resultMessage ->
+          user = userObj,
+          onSignUpClick = {
+            CoroutineScope(Dispatchers.Main).launch {
+              loginRegisterViewModel.handleRegisterClick(userObj) { resultMessage ->
                 CoroutineScope(Dispatchers.Main).launch {
                   SnackbarManager.showSnackbar(resultMessage)
                 }
               }
-            },
-            onBackClick = {
-              val loginIntent = Intent(this, LoginActivity::class.java)
-              startActivity(loginIntent)
-            })
+            }
+          },
+          onBackClick = {
+            val loginIntent = Intent(this, LoginActivity::class.java)
+            startActivity(loginIntent)
+          }
+        )
       }
     }
+    // Settings register event
+    loginRegisterNavigationHandler.observeRegisterEvent(
+      lifecycleOwner = this,
+      loginRegisterViewModel = loginRegisterViewModel,
+      context = this
+    )
   }
 }
 
@@ -79,62 +91,69 @@ fun UserSignUpForm(user: User, onSignUpClick: () -> Unit, onBackClick: () -> Uni
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Column(modifier = Modifier.fillMaxWidth().padding(13.dp)) {
       TextField(
-          value = user.username,
-          onValueChange = { user.username = it },
-          placeholder = { Text("Enter your username") },
-          isError = isUsernameError,
-          modifier = Modifier.fillMaxWidth())
+        value = user.username,
+        onValueChange = { user.username = it },
+        placeholder = { Text("Enter your username") },
+        isError = isUsernameError,
+        modifier = Modifier.fillMaxWidth()
+      )
       // Display error message
       if (isUsernameError) {
         Text(
-            text = "Username cannot be empty",
-            color = Color.Red,
-            style = MaterialTheme.typography.bodyMedium)
+          text = "Username cannot be empty",
+          color = Color.Red,
+          style = MaterialTheme.typography.bodyMedium
+        )
       }
       Spacer(modifier = Modifier.height(8.dp))
 
       TextField(
-          value = user.email,
-          onValueChange = { user.email = it },
-          placeholder = { Text("Enter your email") },
-          isError = isEmailError,
-          modifier = Modifier.fillMaxWidth())
+        value = user.email,
+        onValueChange = { user.email = it },
+        placeholder = { Text("Enter your email") },
+        isError = isEmailError,
+        modifier = Modifier.fillMaxWidth()
+      )
 
       // Display error message
       if (isEmailError) {
         Text(
-            text = "Email is invalid",
-            color = Color.Red,
-            style = MaterialTheme.typography.bodyMedium)
+          text = "Email is invalid",
+          color = Color.Red,
+          style = MaterialTheme.typography.bodyMedium
+        )
       }
 
       Spacer(modifier = Modifier.height(8.dp))
 
       TextField(
-          value = user.password,
-          onValueChange = { user.password = it },
-          placeholder = { Text("Enter your password") },
-          visualTransformation = PasswordVisualTransformation(),
-          isError = isPasswordError,
-          modifier = Modifier.fillMaxWidth())
+        value = user.password,
+        onValueChange = { user.password = it },
+        placeholder = { Text("Enter your password") },
+        visualTransformation = PasswordVisualTransformation(),
+        isError = isPasswordError,
+        modifier = Modifier.fillMaxWidth()
+      )
 
       // Display error message
       if (isPasswordError) {
         Text(
-            text =
-                "Password does not conform the rules: minimum 8 characters long, at least 1 lowercase, uppercase and digits ",
-            color = Color.Red,
-            style = MaterialTheme.typography.bodyMedium)
+          text =
+            "Password does not conform the rules: minimum 8 characters long, at least 1 lowercase, uppercase and digits ",
+          color = Color.Red,
+          style = MaterialTheme.typography.bodyMedium
+        )
       }
 
       Spacer(modifier = Modifier.height(16.dp))
 
       Button(
-          onClick = { onSignUpClick() },
-          enabled = !isSubmitBtnDisabled,
-          modifier = Modifier.fillMaxWidth()) {
-            Text("Sign Up")
-          }
+        onClick = { onSignUpClick() },
+        enabled = !isSubmitBtnDisabled,
+        modifier = Modifier.fillMaxWidth()
+      ) {
+        Text("Sign Up")
+      }
 
       Spacer(modifier = Modifier.height(8.dp))
 
@@ -150,9 +169,10 @@ fun UserSignUpFormPreview() {
   val dummyUser = User("", "", "")
   var message by remember { mutableStateOf("") }
   UserSignUpForm(
-      user = dummyUser,
-      onSignUpClick = { message = "Goto Sign up!" },
-      onBackClick = { message = "Goto Sign up!" })
+    user = dummyUser,
+    onSignUpClick = { message = "Goto Sign up!" },
+    onBackClick = { message = "Goto Sign up!" }
+  )
   // Test if the message is not empty, then display it
   if (message.isNotEmpty()) {
     Text(text = message)

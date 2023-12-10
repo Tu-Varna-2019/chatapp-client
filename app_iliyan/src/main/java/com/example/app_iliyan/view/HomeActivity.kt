@@ -18,14 +18,12 @@ import com.example.app_iliyan.view.components.home.HomeNavigationBottomMenu
 import com.example.app_iliyan.view_model.HomeViewModel
 
 class HomeActivity : ComponentActivity() {
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
     val homeNavigationHandler = HomeNavigationHandler()
     val userOptionsObj = UserOptions("", "Chat")
     val homeViewModel: HomeViewModel by viewModels()
-    // val settingsViewModel: SettingsViewModel by viewModels()
 
     setContent {
       val groupchatListState = homeViewModel.groupChats.collectAsState()
