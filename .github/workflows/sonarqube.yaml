@@ -7,34 +7,38 @@ on:
 
 
 jobs:
-  build:
-    name: Build
+  build_analyze_app_iliyan:
+    name: Build and Analyze App Iliyan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
       - name: Cache SonarQube packages
         uses: actions/cache@v1
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+
       - name: Cache Gradle packages
         uses: actions/cache@v1
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('app_iliyan/**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
-      - name: Grant execute permission to gradlew
-        run: chmod +x ./gradlew
-      - name: Build and analyze
+
+      - name: Grant execute permission to app_iliyan gradlew
+        run: chmod +x ./app_iliyan/gradlew
+
+      - name: Build and analyze App Iliyan
+        working-directory: ./app_iliyan
         env:
-          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: ./gradlew build sonar --info
