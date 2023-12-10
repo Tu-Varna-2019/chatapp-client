@@ -1,5 +1,6 @@
 package com.example.app_iliyan.repository
 
+import com.example.app_iliyan.BuildConfig
 import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.helpers.Utils
 import kotlinx.coroutines.Dispatchers
@@ -13,8 +14,8 @@ import java.net.Socket
 class SocketConnection {
 
   companion object {
-    private const val SERVER_ADDRESS = "10.0.2.2"
-    private const val PORT = 8081
+    private const val SERVER_ADDRESS = BuildConfig.SERVER_ADDRESS
+    private const val PORT = BuildConfig.PORT
 
     suspend fun sendAndReceiveData(jsonString: String): ServerResponse =
       withContext(Dispatchers.IO) {

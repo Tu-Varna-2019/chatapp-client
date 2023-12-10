@@ -8,6 +8,8 @@ android {
   namespace = "com.example.app_iliyan"
   compileSdk = 34
 
+  buildFeatures { buildConfig = true }
+
   packaging { resources { excludes.add("META-INF/DEPENDENCIES") } }
 
   defaultConfig {
@@ -16,6 +18,8 @@ android {
     targetSdk = 34
     versionCode = 1
     versionName = "1.0"
+    buildConfigField("String", "SERVER_ADDRESS", "\"10.0.2.2\"")
+    buildConfigField("int", "PORT", "8081")
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     vectorDrawables { useSupportLibrary = true }
