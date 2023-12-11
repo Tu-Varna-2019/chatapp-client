@@ -55,8 +55,22 @@ class HomeViewModel() : ViewModel(), ChatInterface {
   }
 
   suspend fun handleRenameUsernameClick(userEnteredUsername: String, onResult: (String) -> Unit) {
-    val isRenameUsernameSuccess =
-      chatRepo.userRepo.handleRenameUsernameAuthUser(userEnteredUsername, onResult)
+    chatRepo.userRepo.handleRenameUsernameAuthUser(userEnteredUsername, onResult)
+  }
+
+  suspend fun handleRenameEmailClick(userEnteredEmail: String, onResult: (String) -> Unit) {
+    chatRepo.userRepo.handleRenameEmailAuthUser(userEnteredEmail, onResult)
+  }
+
+  suspend fun handleChangePasswordClick(
+    oldPassword: String,
+    newPassword: String,
+    onResult: (String) -> Unit
+  ) {
+    val isPasswordChanged =
+      chatRepo.userRepo.handleChangePasswordAuthUser(oldPassword, newPassword, onResult)
+
+    if (isPasswordChanged) logoutEvent.value = true
   }
 
   companion object {

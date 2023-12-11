@@ -31,7 +31,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.app_iliyan.R
 import com.example.app_iliyan.model.LocalData
 import com.example.app_iliyan.view.components.dialog_box.AlertDialogManager
+import com.example.app_iliyan.view.components.dialog_box.DialogChangePassword
 import com.example.app_iliyan.view.components.dialog_box.DialogConfirmDeleteAccount
+import com.example.app_iliyan.view.components.dialog_box.DialogRenameEmail
 import com.example.app_iliyan.view.components.dialog_box.DialogRenameUsername
 import com.example.app_iliyan.view.components.dialog_box.SnackbarManager
 import com.example.app_iliyan.view_model.HomeViewModel
@@ -47,6 +49,7 @@ fun SettingsOptionList() {
   val showDeleteAccountDialog = remember { mutableStateOf(false) }
   val showRenameUsernameDialog = remember { mutableStateOf(false) }
   val showRenameEmailDialog = remember { mutableStateOf(false) }
+  val showChangePasswordDialog = remember { mutableStateOf(false) }
 
   SnackbarManager.ScaffoldSnackbar {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -97,7 +100,10 @@ fun SettingsOptionList() {
           Text(
             text = "Edit",
             style = TextStyle(fontSize = 18.sp, color = Color.Blue),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier =
+              Modifier.align(Alignment.CenterHorizontally).clickable {
+                showRenameEmailDialog.value = true
+              }
           )
 
           Spacer(modifier = Modifier.height(8.dp))
@@ -105,7 +111,10 @@ fun SettingsOptionList() {
           Text(
             text = "Edit password",
             style = TextStyle(fontSize = 18.sp, color = Color.Blue),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier =
+              Modifier.align(Alignment.CenterHorizontally).clickable {
+                showChangePasswordDialog.value = true
+              }
           )
 
           Spacer(modifier = Modifier.height(80.dp))
@@ -138,6 +147,7 @@ fun SettingsOptionList() {
             )
           }
 
+          // Delete account dialog
           if (showDeleteAccountDialog.value) {
             DialogConfirmDeleteAccount(
               title = "Delete Account",
@@ -156,6 +166,7 @@ fun SettingsOptionList() {
             )
           }
 
+          // Rename username dialog
           if (showRenameUsernameDialog.value) {
             DialogRenameUsername(
               title = "Rename username",
@@ -171,6 +182,44 @@ fun SettingsOptionList() {
                 }
               },
               onDismiss = { showRenameUsernameDialog.value = false }
+            )
+          }
+
+          // Rename email dialog
+          if (showRenameEmailDialog.value) {
+            DialogRenameEmail(
+              title = "Rename email",
+              message = "Please enter your email",
+              onConfirm = { email ->
+                CoroutineScope(Dispatchers.Main).launch {
+                  homeViewModel.handleRenameEmailClick(email) { resultMessage ->
+                    CoroutineScope(Dispatchers.Main).launch {
+                      SnackbarManager.showSnackbar(resultMessage)
+                    }
+                  }
+                  showRenameEmailDialog.value = false
+                }
+              },
+              onDismiss = { showRenameEmailDialog.value = false }
+            )
+          }
+
+          // Change password dialog
+          if (showChangePasswordDialog.value) {
+            DialogChangePassword(
+              title = "Change password",
+              onConfirm = { oldPassword, newPassword ->
+                CoroutineScope(Dispatchers.Main).launch {
+                  homeViewModel.handleChangePasswordClick(oldPassword, newPassword) { resultMessage
+                    ->
+                    CoroutineScope(Dispatchers.Main).launch {
+                      SnackbarManager.showSnackbar(resultMessage)
+                    }
+                  }
+                  showChangePasswordDialog.value = false
+                }
+              },
+              onDismiss = { showChangePasswordDialog.value = false }
             )
           }
         }

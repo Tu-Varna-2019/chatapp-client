@@ -4,26 +4,30 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
+import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.LocalData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialogRenameUsername(
+fun DialogRenameEmail(
   title: String,
   message: String,
   onConfirm: (String) -> Unit,
   onDismiss: () -> Unit
 ) {
   val openDialog = remember { mutableStateOf(true) }
-  val username = remember { mutableStateOf(LocalData.getAuthenticatedUser()?.username ?: "") }
-  val initialUsername = LocalData.getAuthenticatedUser()?.username ?: ""
+  val email = remember { mutableStateOf(LocalData.getAuthenticatedUser()?.email ?: "") }
+  val initialEmail = LocalData.getAuthenticatedUser()?.email ?: ""
 
-  val isConfirmBtnDisabled = username.value.isEmpty() || username.value == initialUsername
+  val isConfirmBtnDisabled =
+    email.value.isEmpty() || email.value == initialEmail || Utils.isValidEmail(email.value)
 
   if (openDialog.value) {
     AlertDialog(
@@ -33,18 +37,35 @@ fun DialogRenameUsername(
         Column {
           Text(text = message)
           TextField(
-            value = username.value,
+            value = email.value,
             isError = isConfirmBtnDisabled,
-            onValueChange = { username.value = it },
-            placeholder = { Text("Incorrect username") }
+            onValueChange = { email.value = it },
+            placeholder = { Text("Enter your email") }
           )
+          // Display error message
+          if (isConfirmBtnDisabled) {
+            // Display error message based on the type of error
+            val errorMessage =
+              if (email.value.isEmpty()) {
+                "Email is empty"
+              } else if (email.value == initialEmail) {
+                "Email cannot be the same"
+              } else {
+                "Email is invalid"
+              }
+            Text(
+              text = errorMessage,
+              color = Color.Red,
+              style = MaterialTheme.typography.bodyMedium
+            )
+          }
         }
       },
       confirmButton = {
         Button(
           enabled = !isConfirmBtnDisabled,
           onClick = {
-            onConfirm(username.value)
+            onConfirm(email.value)
             openDialog.value = false
           }
         ) {

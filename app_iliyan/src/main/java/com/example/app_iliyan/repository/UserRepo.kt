@@ -80,7 +80,6 @@ class UserRepo : SharedRepo() {
         onResult("Error, please try again later")
         return@withContext false
       }
-      return@withContext false
     }
   }
 
@@ -102,7 +101,7 @@ class UserRepo : SharedRepo() {
           onResult(server.response.message)
           LocalData.setAuthenticatedUser(
             userEnteredUsername,
-            server.response.user?.email.toString(),
+            LocalData.getAuthenticatedUser()?.email ?: "",
           )
           return@withContext true
         } else {
@@ -114,7 +113,78 @@ class UserRepo : SharedRepo() {
         onResult("Error, please try again later")
         return@withContext false
       }
-      return@withContext false
+    }
+  }
+
+  suspend fun handleRenameEmailAuthUser(
+    userEnteredEmail: String,
+    onResult: (String) -> Unit
+  ): Boolean {
+    return withContext(Dispatchers.Main) {
+      try {
+        // Sent userdata is in the format User (old-email, new-email, empty password)
+        // Reason: avoid creating new dataclass for this purpose
+        val user =
+          User(
+            LocalData.getAuthenticatedUser()?.email ?: "",
+            userEnteredEmail,
+            LocalData.getAuthenticatedUser()?.password ?: ""
+          )
+
+        val server: ServerResponse = encodeAndSendUserDataByEvent("RenameEmail", user)
+
+        if (server.response.status == "Success") {
+
+          onResult(server.response.message)
+          LocalData.setAuthenticatedUser(
+            LocalData.getAuthenticatedUser()?.username ?: "",
+            userEnteredEmail,
+          )
+          return@withContext true
+        } else {
+          onResult(server.response.status + " : " + server.response.message)
+          return@withContext false
+        }
+      } catch (e: Exception) {
+        Log.e("RenameEmailError", e.message.toString())
+        onResult("Error, please try again later")
+        return@withContext false
+      }
+    }
+  }
+
+  suspend fun handleChangePasswordAuthUser(
+    userEnteredOldPassword: String,
+    userEnteredNewPassword: String,
+    onResult: (String) -> Unit
+  ): Boolean {
+    return withContext(Dispatchers.Main) {
+      try {
+        // Sent userdata is in the format User (new-password, new-email, old-password)
+        // Reason: avoid creating new dataclass for this purpose
+        val user =
+          User(
+            userEnteredNewPassword,
+            LocalData.getAuthenticatedUser()?.email ?: "",
+            userEnteredOldPassword
+          )
+
+        val server: ServerResponse = encodeAndSendUserDataByEvent("ChangePassword", user)
+
+        if (server.response.status == "Success") {
+
+          onResult(server.response.message)
+
+          return@withContext true
+        } else {
+          onResult(server.response.status + " : " + server.response.message)
+          return@withContext false
+        }
+      } catch (e: Exception) {
+        Log.e("ChangePasswordError", e.message.toString())
+        onResult("Error, please try again later")
+        return@withContext false
+      }
     }
   }
 }
