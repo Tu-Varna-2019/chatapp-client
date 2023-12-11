@@ -161,3 +161,15 @@ j
 :app_iliyan/src/main/java/com/example/app_iliyan/log4j2.xml,a\e\ae2973627f8c8ba1fe485953aa2565ac69aa519d
 u
 Eapp_iliyan/src/main/java/com/example/app_iliyan/view/SignUpCompose.kt,b\b\bba52c9ac229a3d778d3f4a3ecb766228919202f
+ä
+Zapp_iliyan/src/main/java/com/example/app_iliyan/view/components/home/SettingsOptionList.kt,0\c\0cf10a1e6cfe73815bbba327db4acac0f9d0f6d4
+{
+Kapp_iliyan/src/main/java/com/example/app_iliyan/view_model/HomeViewModel.kt,1\1\11e53d5d17d146e9767d5a020783465cdf2e7912
+ê
+`app_iliyan/src/main/java/com/example/app_iliyan/view/components/dialog_box/AlertDialogManager.kt,c\9\c9ff8db0fb9a5d0d939bacad97d964fc694488eb
+v
+Fapp_iliyan/src/main/java/com/example/app_iliyan/repository/UserRepo.kt,9\f\9f7320f8d4dbddf8e7dbbb0fdb1155799a0e2589
+t
+Dapp_iliyan/src/main/java/com/example/app_iliyan/view/HomeActivity.kt,e\c\ec9ed9da5e29c930c89c8910ed23cdb3b95b9b64
+ò
+happ_iliyan/src/main/java/com/example/app_iliyan/view/components/dialog_box/DialogConfirmDeleteAccount.kt,2\4\24eaddef87f73967fc8b6095d858af3a5869c430

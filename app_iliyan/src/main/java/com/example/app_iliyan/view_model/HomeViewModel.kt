@@ -47,6 +47,18 @@ class HomeViewModel() : ViewModel(), ChatInterface {
     logoutEvent.value = true
   }
 
+  suspend fun handleDeleteAccountClick(userEnteredPassword: String, onResult: (String) -> Unit) {
+    val isDeleteAccountSuccess =
+      chatRepo.userRepo.handleDeleteAuthUser(userEnteredPassword, onResult)
+
+    if (isDeleteAccountSuccess) logoutEvent.value = true
+  }
+
+  suspend fun handleRenameUsernameClick(userEnteredUsername: String, onResult: (String) -> Unit) {
+    val isRenameUsernameSuccess =
+      chatRepo.userRepo.handleRenameUsernameAuthUser(userEnteredUsername, onResult)
+  }
+
   companion object {
     fun handleSelectedTabClick(selectedTab: UserOptions) {
       when (selectedTab.selectedTab) {
