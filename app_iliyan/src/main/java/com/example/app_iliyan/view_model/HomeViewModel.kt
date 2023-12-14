@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel() : ViewModel(), ChatInterface {
   override val chatRepo: ChatRepo = ChatRepo()
   val logoutEvent = MutableLiveData<Boolean>()
+  val gotoMessageEvent = MutableLiveData<GroupChat?>()
   private val _groupChats = MutableStateFlow<List<GroupChat>>(emptyList())
   val groupChats: StateFlow<List<GroupChat>> = _groupChats
 
@@ -45,6 +46,10 @@ class HomeViewModel() : ViewModel(), ChatInterface {
       "",
     )
     logoutEvent.value = true
+  }
+
+  fun handleGotoMessageClick(groupChat: GroupChat) {
+    gotoMessageEvent.value = groupChat
   }
 
   suspend fun handleDeleteAccountClick(userEnteredPassword: String, onResult: (String) -> Unit) {

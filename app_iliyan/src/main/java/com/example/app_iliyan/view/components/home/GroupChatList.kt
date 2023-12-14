@@ -1,6 +1,7 @@
 package com.example.app_iliyan.view.components.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,8 +26,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.app_iliyan.R
 import com.example.app_iliyan.model.GroupChat
+import com.example.app_iliyan.view_model.HomeViewModel
 
 @Composable
 fun GroupChatList(items: List<GroupChat>) {
@@ -52,12 +55,14 @@ fun GroupChatList(items: List<GroupChat>) {
 
 @Composable
 fun GroupChatItem(item: GroupChat) {
+
+  val homeViewModel: HomeViewModel = viewModel()
+
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Card(
       modifier =
         Modifier.padding(0.dp)
-          // .width(250.dp)
-          // .clickable {  }
+          .clickable { homeViewModel.handleGotoMessageClick(item) }
           .fillMaxSize()
           .padding(8.dp),
       elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),

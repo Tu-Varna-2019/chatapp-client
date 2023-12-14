@@ -17,21 +17,26 @@ class ServerDataHandler {
 
     fun convertGroupChatDataToModel(groupChatData: GroupChatData): GroupChat {
       val users =
-          groupChatData.users.map { userData ->
-            User(username = userData.username, email = userData.email, password = userData.password)
-          }
-      return GroupChat(name = groupChatData.name, users = users)
+        groupChatData.users.map { userData ->
+          User(username = userData.username, email = userData.email, password = userData.password)
+        }
+      return GroupChat(id = groupChatData.id, name = groupChatData.name, users = users)
     }
 
     fun convertFriendRequestDataToModel(friendrequestData: FriendRequestData): FriendRequest {
 
       val recipient =
-          User(
-              username = friendrequestData.recipient.username,
-              email = friendrequestData.recipient.email,
-              password = friendrequestData.recipient.password)
+        User(
+          username = friendrequestData.recipient.username,
+          email = friendrequestData.recipient.email,
+          password = friendrequestData.recipient.password
+        )
 
-      return FriendRequest(status = friendrequestData.status, recipient = recipient)
+      return FriendRequest(
+        id = friendrequestData.id,
+        status = friendrequestData.status,
+        recipient = recipient
+      )
     }
   }
 }

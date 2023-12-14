@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import com.example.app_iliyan.dataclass.GroupChatData
 import com.example.app_iliyan.view.LoginActivity
+import com.example.app_iliyan.view.MessageActivity
 import com.example.app_iliyan.view_model.HomeViewModel
+import kotlinx.serialization.json.Json
 
 class HomeNavigationHandler {
   fun observeLogoutEvent(
@@ -21,6 +24,28 @@ class HomeNavigationHandler {
           context.startActivity(intent)
           homeViewModel.logoutEvent.value = false
         }
+      }
+    )
+  }
+
+  fun observeGotoMessageEvent(
+    lifecycleOwner: LifecycleOwner,
+    homeViewModel: HomeViewModel,
+    context: Context
+  ) {
+    homeViewModel.gotoMessageEvent.observe(
+      lifecycleOwner,
+      Observer { groupChat ->
+        val serializableGroupChat = groupChat?.let { GroupChatData(0, it.name ?: "", emptyList()) }
+
+        serializableGroupChat?.let {
+          val json = Json.encodeToString(GroupChatData.serializer(), it)
+          val intent =
+            Intent(context, MessageActivity::class.java).apply { putExtra("groupChat", json) }
+          context.startActivity(intent)
+        }
+        // #TODO: Create MutableStateFlow for this
+        // homeViewModel.gotoMessageEvent.value = null
       }
     )
   }
