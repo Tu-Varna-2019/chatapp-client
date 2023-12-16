@@ -4,4 +4,5 @@ class ChatRepo {
   public val userRepo: UserRepo = UserRepo()
   public val groupChatRepo: GroupChatRepo = GroupChatRepo()
   public val friendRequestRepo: FriendRequestRepo = FriendRequestRepo()
+  public val messageRepo: MessageRepo = MessageRepo()
 }

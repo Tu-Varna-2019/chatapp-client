@@ -6,9 +6,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseContent(
-    val status: String,
-    val message: String,
-    val user: UserData? = null,
-    val groupchats: List<GroupChatDataClass>? = null,
-    val friendrequests: List<FriendRequestDataClass>? = null
+  val status: String,
+  val message: String,
+  val user: UserData? = null,
+  val groupchats: List<GroupChatDataClass>? = null,
+  val messages: List<MessageData>? = null,
+  val friendrequests: List<FriendRequestDataClass>? = null
 )

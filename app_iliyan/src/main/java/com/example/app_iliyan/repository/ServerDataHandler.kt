@@ -2,9 +2,12 @@ package com.example.app_iliyan.repository
 
 import com.example.app_iliyan.dataclass.FriendRequestData
 import com.example.app_iliyan.dataclass.GroupChatData
+import com.example.app_iliyan.dataclass.MessageData
 import com.example.app_iliyan.dataclass.ServerResponse
+import com.example.app_iliyan.dataclass.UserData
 import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
+import com.example.app_iliyan.model.Message
 import com.example.app_iliyan.model.User
 import kotlinx.serialization.json.Json
 
@@ -37,6 +40,28 @@ class ServerDataHandler {
         status = friendrequestData.status,
         recipient = recipient
       )
+    }
+
+    fun convertMessageDataToModel(messageData: MessageData): Message {
+
+      val sender =
+        User(
+          username = messageData.sender.username,
+          email = messageData.sender.email,
+          password = messageData.sender.password
+        )
+
+      return Message(
+        id = messageData.id,
+        content = messageData.content,
+        attachmentURL = messageData.attachmentURL,
+        timestamp = messageData.timestamp,
+        sender = sender
+      )
+    }
+
+    fun convertListUserToListUserData(users: List<User>): List<UserData> {
+      return users.map { user -> UserData(user.username, user.email, user.password) }
     }
   }
 }

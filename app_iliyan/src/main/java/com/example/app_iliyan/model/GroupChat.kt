@@ -14,6 +14,5 @@ class GroupChat {
     this.id = id
     this.name = name
     this.users = users
-    this.messages = listOf<Message>()
   }
 }

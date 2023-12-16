@@ -12,9 +12,10 @@ class User {
 
   fun base64EncodeUser(): Array<String> {
     return arrayOf(
-        MaskData.base64Encode(username),
-        MaskData.base64Encode(email),
-        MaskData.base64Encode(password))
+      MaskData.base64Encode(username),
+      MaskData.base64Encode(email),
+      MaskData.base64Encode(password)
+    )
   }
 
   constructor(username: String, email: String, password: String) {

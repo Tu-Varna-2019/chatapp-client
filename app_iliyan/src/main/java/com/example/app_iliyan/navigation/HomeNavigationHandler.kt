@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.example.app_iliyan.dataclass.GroupChatData
+import com.example.app_iliyan.repository.ServerDataHandler
 import com.example.app_iliyan.view.LoginActivity
 import com.example.app_iliyan.view.MessageActivity
 import com.example.app_iliyan.view_model.HomeViewModel
@@ -36,7 +37,14 @@ class HomeNavigationHandler {
     homeViewModel.gotoMessageEvent.observe(
       lifecycleOwner,
       Observer { groupChat ->
-        val serializableGroupChat = groupChat?.let { GroupChatData(0, it.name ?: "", emptyList()) }
+        val serializableGroupChat =
+          groupChat?.let {
+            GroupChatData(
+              it.id,
+              it.name ?: "",
+              ServerDataHandler.convertListUserToListUserData(it.users)
+            )
+          }
 
         serializableGroupChat?.let {
           val json = Json.encodeToString(GroupChatData.serializer(), it)
