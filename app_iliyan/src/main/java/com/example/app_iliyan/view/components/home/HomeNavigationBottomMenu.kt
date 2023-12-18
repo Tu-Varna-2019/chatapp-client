@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +32,6 @@ import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.view_model.HomeViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeNavigationBottomMenu(
@@ -88,7 +86,6 @@ fun HomeNavigationBottomMenu(
             Icon(Icons.Filled.Add, contentDescription = "Add")
           }
         }
-
         MaterialTheme(
           colorScheme =
             MaterialTheme.colorScheme.copy(surface = Color(red = 234, green = 221, blue = 255))

@@ -10,9 +10,10 @@ class GroupChat {
   var users by mutableStateOf(listOf<User>())
   var messages by mutableStateOf(listOf<Message>())
 
-  constructor(id: Int, name: String, users: List<User>) {
+  constructor(id: Int, name: String, users: List<User>, messages: List<Message> = listOf()) {
     this.id = id
     this.name = name
     this.users = users
+    this.messages = messages
   }
 }
