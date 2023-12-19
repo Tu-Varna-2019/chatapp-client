@@ -4,6 +4,7 @@ import com.example.app_iliyan.dataclass.GroupChatData
 import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.GroupChat
+import com.example.app_iliyan.model.Message
 
 class MessageRepo : SharedRepo() {
   suspend fun getAllMessages(groupChatDataArg: GroupChatData): GroupChat {
@@ -31,5 +32,45 @@ class MessageRepo : SharedRepo() {
       Utils.logger.error("getAllMessages: {}", e.message.toString())
     }
     return groupChatArg
+  }
+
+  suspend fun sendMessage(groupChatID: String, typedMessage: String): List<Message> {
+    try {
+
+      val server: ServerResponse =
+        encodeAndSendMessageDataByEvent("SendMessageByGroupID", groupChatID, typedMessage)
+
+      if (server.response.status == "Success" && server.response.messages != null) {
+
+        val messageList =
+          server.response.messages.map { messageData ->
+            ServerDataHandler.convertMessageDataToModel(messageData.message)
+          }
+
+        return messageList
+      } else {
+        Utils.logger.warn("sendMessage: Not Messages updated")
+        return emptyList()
+      }
+    } catch (e: Exception) {
+      Utils.logger.error("sendMessage: {}", e.message.toString())
+    }
+    return emptyList()
+  }
+
+  suspend fun deleteMessage(messageID: Int): Boolean {
+    try {
+      val server: ServerResponse = encodeAndSendIDByEvent("deleteMessageByGroupID", messageID)
+
+      if (server.response.status == "Success") {
+        return true
+      } else {
+        Utils.logger.warn("deleteMessage: Not Messages deleted")
+        return false
+      }
+    } catch (e: Exception) {
+      Utils.logger.error("deleteMessage: {}", e.message.toString())
+    }
+    return false
   }
 }

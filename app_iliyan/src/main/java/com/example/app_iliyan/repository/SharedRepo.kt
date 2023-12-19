@@ -1,14 +1,22 @@
 package com.example.app_iliyan.repository
 
+import com.example.app_iliyan.dataclass.CreateMessageData
+import com.example.app_iliyan.dataclass.CreateMessageEvent
 import com.example.app_iliyan.dataclass.IdData
 import com.example.app_iliyan.dataclass.IdEventData
+import com.example.app_iliyan.dataclass.MessageData
 import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.dataclass.UserData
 import com.example.app_iliyan.dataclass.UserSignUpData
 import com.example.app_iliyan.helpers.MaskData
+import com.example.app_iliyan.helpers.Utils
+import com.example.app_iliyan.model.LocalData
+import com.example.app_iliyan.model.Message
 import com.example.app_iliyan.model.User
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 abstract class SharedRepo {
   suspend fun encodeAndSendUserDataByEvent(event: String, user: User): ServerResponse {
@@ -20,6 +28,54 @@ abstract class SharedRepo {
     val userSignUpData = UserSignUpData(encodedEventType, userData)
     val jsonString = Json.encodeToString(userSignUpData)
 
+    val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
+
+    return server
+  }
+
+  suspend fun encodeAndSendMessageDataByEvent(
+    event: String,
+    groupChatID: String,
+    typedMessage: String
+  ): ServerResponse {
+
+    val currentDateTime =
+      LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"))
+    val user = LocalData.getAuthenticatedUser() ?: User("", "", "")
+
+    val message =
+      Message(
+        id = 0,
+        content = typedMessage,
+        attachmentURL = "",
+        timestamp = currentDateTime,
+        sender = user
+      )
+
+    val encodedSender = message.sender.base64EncodeUser()
+    val encodedMessage = message.base64EncodeMessage()
+    val encodedEventType = MaskData.base64Encode(event)
+
+    val messageData =
+      CreateMessageData(
+        message =
+          MessageData(
+            encodedMessage[0],
+            encodedMessage[1],
+            encodedMessage[2],
+            encodedMessage[3],
+            UserData(encodedSender[0], encodedSender[1], encodedSender[2])
+          ),
+        groupchatid = MaskData.base64Encode(groupChatID)
+      )
+
+    val createMessageData =
+      CreateMessageEvent(
+        encodedEventType,
+        messageData,
+      )
+    val jsonString = Json.encodeToString(createMessageData)
+    Utils.logger.warn("jsonString: {}", jsonString)
     val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
 
     return server

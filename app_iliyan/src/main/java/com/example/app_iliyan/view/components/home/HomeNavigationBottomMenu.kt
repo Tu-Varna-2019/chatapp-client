@@ -76,7 +76,6 @@ fun HomeNavigationBottomMenu(
     },
     floatingActionButton = {
       Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
-
         // Hide + button if user is in Settings tab
         if (userOptions.selectedTab != "Settings") {
           FloatingActionButton(

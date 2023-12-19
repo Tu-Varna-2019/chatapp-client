@@ -52,7 +52,7 @@ class ServerDataHandler {
         )
 
       return Message(
-        id = messageData.id,
+        id = messageData.id.toInt(),
         content = messageData.content,
         attachmentURL = messageData.attachmentURL,
         timestamp = messageData.timestamp,

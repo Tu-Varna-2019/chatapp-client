@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.app_iliyan.dataclass.GroupChatData
 import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.GroupChat
+import com.example.app_iliyan.model.Message
 import com.example.app_iliyan.repository.ChatInterface
 import com.example.app_iliyan.repository.ChatRepo
 import kotlinx.coroutines.Dispatchers
@@ -30,5 +31,20 @@ class MessageViewModel : ViewModel(), ChatInterface {
         Utils.logger.error("Error fetching messages!")
       }
     }
+  }
+
+  suspend fun handleSendMessageClick(groupChat: GroupChat, typedMessage: String) {
+
+    val updatedMessages = chatRepo.messageRepo.sendMessage(groupChat.id.toString(), typedMessage)
+    if (!updatedMessages.isEmpty()) _selectedGroupChat.value.messages = updatedMessages
+  }
+
+  suspend fun handleDeleteMessageClick(deletedMessage: Message) {
+
+    val isMessageDeleted = chatRepo.messageRepo.deleteMessage(deletedMessage.id)
+
+    if (isMessageDeleted)
+      _selectedGroupChat.value.messages =
+        _selectedGroupChat.value.messages.filterNot { it.id == deletedMessage.id }
   }
 }

@@ -4,6 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable data class IdEventData(val eventType: String, val data: IdData)
 
+@Serializable data class CreateMessageEvent(val eventType: String, val data: CreateMessageData)
+
+@Serializable data class CreateMessageData(val message: MessageData, val groupchatid: String)
+
 @Serializable data class IdData(val id: String)
 
 @Serializable data class UserSignUpData(val eventType: String, val data: UserData)
@@ -18,7 +22,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MessageData(
-  val id: Int,
+  val id: String,
   val content: String,
   val attachmentURL: String,
   val timestamp: String,

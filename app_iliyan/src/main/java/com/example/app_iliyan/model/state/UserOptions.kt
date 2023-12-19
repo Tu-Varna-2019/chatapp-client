@@ -8,8 +8,8 @@ class UserOptions {
   var searchText by mutableStateOf("")
   var selectedTab by mutableStateOf("Chat")
 
-    constructor(searchText: String, selectedTab: String) {
-        this.searchText = searchText
-        this.selectedTab = selectedTab
-    }
+  constructor(searchText: String, selectedTab: String) {
+    this.searchText = searchText
+    this.selectedTab = selectedTab
+  }
 }
