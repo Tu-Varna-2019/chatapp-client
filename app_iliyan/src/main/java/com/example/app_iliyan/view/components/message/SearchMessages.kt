@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
@@ -81,6 +82,15 @@ fun SendMessage(groupChat: GroupChat) {
   val messageViewModel: MessageViewModel = viewModel()
   val isLoading = remember { mutableStateOf(false) }
 
+  Box(contentAlignment = Alignment.TopStart) {
+    Button(
+      onClick = { messageViewModel.backHomeEvent.value = true },
+      colors =
+        ButtonDefaults.buttonColors(contentColor = Color.Black, containerColor = Color.Transparent),
+    ) {
+      Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+    }
+  }
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     Text(
       text = groupChat.name,
@@ -106,6 +116,7 @@ fun SendMessage(groupChat: GroupChat) {
       singleLine = true
     )
     Button(
+      enabled = !typedMessage.value.isEmpty(),
       onClick = {
         CoroutineScope(Dispatchers.Main).launch {
           isLoading.value = true

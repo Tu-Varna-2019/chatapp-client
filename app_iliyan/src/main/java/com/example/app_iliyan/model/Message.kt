@@ -26,7 +26,6 @@ class Message {
       MaskData.base64Encode(content),
       MaskData.base64Encode(attachmentURL),
       MaskData.base64Encode(timestamp),
-      // sender.base64EncodeUser()
     )
   }
 }

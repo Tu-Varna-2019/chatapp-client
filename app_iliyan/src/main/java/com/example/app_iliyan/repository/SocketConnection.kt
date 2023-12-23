@@ -30,7 +30,7 @@ class SocketConnection {
                 writer.flush()
 
                 val serverResponse = reader.readLine()
-                Utils.logger.info("Received from server: $serverResponse")
+                Utils.logger.error("Received from server: $serverResponse")
 
                 ServerDataHandler.parseResponse(serverResponse)
               }
