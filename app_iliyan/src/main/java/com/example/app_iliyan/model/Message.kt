@@ -24,8 +24,13 @@ class Message {
     return arrayOf(
       MaskData.base64Encode(id.toString()),
       MaskData.base64Encode(content),
-      MaskData.base64Encode(attachmentURL),
+      // Don't encode the attachmentURL, since it's already done via filePicker
+      attachmentURL,
       MaskData.base64Encode(timestamp),
     )
+  }
+
+  override fun toString(): String {
+    return "Message(id=$id, content='$content', attachmentURL='$attachmentURL', timestamp='$timestamp', sender=$sender)"
   }
 }

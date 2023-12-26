@@ -36,7 +36,8 @@ abstract class SharedRepo {
   suspend fun encodeAndSendMessageDataByEvent(
     event: String,
     groupChatID: String,
-    typedMessage: String
+    typedMessage: String,
+    attachmentURL: String
   ): ServerResponse {
 
     val currentDateTime =
@@ -47,7 +48,7 @@ abstract class SharedRepo {
       Message(
         id = 0,
         content = typedMessage,
-        attachmentURL = "",
+        attachmentURL = attachmentURL,
         timestamp = currentDateTime,
         sender = user
       )
@@ -75,7 +76,7 @@ abstract class SharedRepo {
         messageData,
       )
     val jsonString = Json.encodeToString(createMessageData)
-    Utils.logger.warn("jsonString: {}", jsonString)
+    Utils.logger.error("jsonString: {}", jsonString)
     val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
 
     return server

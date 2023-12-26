@@ -5,8 +5,10 @@ import com.example.app_iliyan.dataclass.GroupChatData
 import com.example.app_iliyan.dataclass.MessageData
 import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.dataclass.UserData
+import com.example.app_iliyan.helpers.NotificationService
 import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
+import com.example.app_iliyan.model.LocalData
 import com.example.app_iliyan.model.Message
 import com.example.app_iliyan.model.User
 import kotlinx.serialization.json.Json
@@ -16,6 +18,19 @@ class ServerDataHandler {
     fun parseResponse(jsonString: String): ServerResponse {
       val json = Json { ignoreUnknownKeys = true }
       return json.decodeFromString(ServerResponse.serializer(), jsonString)
+    }
+
+    fun sentNotification(jsonString: String) {
+      val messageData: ServerResponse = parseResponse(jsonString)
+
+      if (messageData.response.message == "Notification sent!")
+        NotificationService.showNotification(
+          LocalData.getAppContext(),
+          // attachmentURL = GroupChatName
+          messageData.response.messages?.get(0)?.message?.attachmentURL ?: "",
+          messageData.response.messages?.get(0)?.message?.content ?: "",
+          1
+        )
     }
 
     fun convertGroupChatDataToModel(groupChatData: GroupChatData): GroupChat {

@@ -34,11 +34,19 @@ class MessageRepo : SharedRepo() {
     return groupChatArg
   }
 
-  suspend fun sendMessage(groupChatID: String, typedMessage: String): List<Message> {
+  suspend fun sendMessage(
+    groupChatID: String,
+    typedMessage: String,
+    attachmentURL: String
+  ): List<Message> {
     try {
-
       val server: ServerResponse =
-        encodeAndSendMessageDataByEvent("SendMessageByGroupID", groupChatID, typedMessage)
+        encodeAndSendMessageDataByEvent(
+          "SendMessageByGroupID",
+          groupChatID,
+          typedMessage,
+          attachmentURL
+        )
 
       if (server.response.status == "Success" && server.response.messages != null) {
 

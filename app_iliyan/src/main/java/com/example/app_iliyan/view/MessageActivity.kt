@@ -1,13 +1,16 @@
 package com.example.app_iliyan.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.app_iliyan.dataclass.GroupChatData
+import com.example.app_iliyan.helpers.MaskData
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.Message
 import com.example.app_iliyan.model.User
@@ -18,11 +21,19 @@ import com.example.app_iliyan.view_model.MessageViewModel
 import kotlinx.serialization.json.Json
 
 class MessageActivity : ComponentActivity() {
+
+  @SuppressLint("Recycle")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
     val messageNavigationHandler = MessageNavigationHandler()
     val messageViewModel: MessageViewModel by viewModels()
+
+    val pickFileLauncher =
+      registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        val base64String = MaskData.base64EncodeUri(this, uri!!)
+        messageViewModel.handleAddAttachmentClick(base64String)
+      }
 
     val groupChatJSON = intent?.getStringExtra("groupChat") ?: ""
     val groupChat: GroupChatData? =
@@ -46,6 +57,12 @@ class MessageActivity : ComponentActivity() {
       lifecycleOwner = this,
       messageViewModel = messageViewModel,
       context = this
+    )
+
+    messageNavigationHandler.observeFilePickerEvent(
+      lifecycleOwner = this,
+      messageViewModel = messageViewModel,
+      pickFileLauncher = pickFileLauncher
     )
   }
 }

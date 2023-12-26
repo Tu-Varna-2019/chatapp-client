@@ -21,6 +21,9 @@ class MessageViewModel : ViewModel(), ChatInterface {
   private val _selectedGroupChat = MutableStateFlow<GroupChat>(GroupChat(0, "", emptyList()))
   val selectedGroupChat: StateFlow<GroupChat> = _selectedGroupChat
 
+  val pickFileEvent = MutableLiveData<Boolean>()
+  val encodedURI = MutableStateFlow<String>("")
+
   fun fetchMessagesByGroupChat(groupChatDataArg: GroupChatData) {
     viewModelScope.launch(Dispatchers.Main) {
       try {
@@ -33,9 +36,13 @@ class MessageViewModel : ViewModel(), ChatInterface {
     }
   }
 
-  suspend fun handleSendMessageClick(groupChat: GroupChat, typedMessage: String) {
+  suspend fun handleSendMessageClick(
+    groupChat: GroupChat,
+    typedMessage: String,
+  ) {
 
-    val updatedMessages = chatRepo.messageRepo.sendMessage(groupChat.id.toString(), typedMessage)
+    val updatedMessages =
+      chatRepo.messageRepo.sendMessage(groupChat.id.toString(), typedMessage, encodedURI.value)
     if (!updatedMessages.isEmpty()) _selectedGroupChat.value.messages = updatedMessages
   }
 
@@ -46,5 +53,13 @@ class MessageViewModel : ViewModel(), ChatInterface {
     if (isMessageDeleted)
       _selectedGroupChat.value.messages =
         _selectedGroupChat.value.messages.filterNot { it.id == deletedMessage.id }
+  }
+
+  fun handleAddAttachmentClick() {
+    pickFileEvent.value = true
+  }
+
+  fun handleAddAttachmentClick(encodedUri: String) {
+    encodedURI.value = encodedUri
   }
 }

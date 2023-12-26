@@ -73,6 +73,10 @@ fun MessageBubble(message: Message) {
         Column(modifier = Modifier.padding(16.dp)) {
           Text(text = isUsernameMe, fontWeight = FontWeight.Bold, fontSize = 16.sp)
           Text(text = message.content, fontSize = 15.sp)
+
+          Spacer(modifier = Modifier.height(4.dp))
+          AttachmentImage(encodedAttachment = message.attachmentURL)
+
           Spacer(modifier = Modifier.height(4.dp))
           Text(
             text = message.timestamp,

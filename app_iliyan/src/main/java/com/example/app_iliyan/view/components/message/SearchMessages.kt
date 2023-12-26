@@ -1,14 +1,20 @@
 package com.example.app_iliyan.view.components.message
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
@@ -75,6 +81,7 @@ fun SearchFieldMessages(groupChat: GroupChat) {
   }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SendMessage(groupChat: GroupChat) {
@@ -91,6 +98,7 @@ fun SendMessage(groupChat: GroupChat) {
       Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
     }
   }
+
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     Text(
       text = groupChat.name,
@@ -115,20 +123,34 @@ fun SendMessage(groupChat: GroupChat) {
         ),
       singleLine = true
     )
-    Button(
-      enabled = !typedMessage.value.isEmpty(),
-      onClick = {
-        CoroutineScope(Dispatchers.Main).launch {
-          isLoading.value = true
-          messageViewModel.handleSendMessageClick(groupChat, typedMessage.value)
-          typedMessage.value = ""
-          isLoading.value = false
-        }
-      },
+
+    Row(
       modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-      colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+      horizontalArrangement = Arrangement.End
     ) {
-      Icon(imageVector = Icons.Default.Send, contentDescription = "", tint = Color.Black)
+      Button(
+        onClick = { messageViewModel.handleAddAttachmentClick() },
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+      ) {
+        Icon(imageVector = Icons.Default.Add, contentDescription = "", tint = Color.Black)
+      }
+
+      Spacer(modifier = Modifier.width(8.dp))
+
+      Button(
+        enabled = !typedMessage.value.isEmpty(),
+        onClick = {
+          CoroutineScope(Dispatchers.Main).launch {
+            isLoading.value = true
+            messageViewModel.handleSendMessageClick(groupChat, typedMessage.value)
+            typedMessage.value = ""
+            isLoading.value = false
+          }
+        },
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+      ) {
+        Icon(imageVector = Icons.Default.Send, contentDescription = "", tint = Color.Black)
+      }
     }
   }
 }
