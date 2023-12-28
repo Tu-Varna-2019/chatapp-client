@@ -2,14 +2,20 @@ package com.example.app_iliyan.repository
 
 import com.example.app_iliyan.dataclass.CreateMessageData
 import com.example.app_iliyan.dataclass.CreateMessageEvent
+import com.example.app_iliyan.dataclass.GroupChatData
 import com.example.app_iliyan.dataclass.IdData
 import com.example.app_iliyan.dataclass.IdEventData
 import com.example.app_iliyan.dataclass.MessageData
+import com.example.app_iliyan.dataclass.ReqCreateGroupChatEvent
+import com.example.app_iliyan.dataclass.ReqFriendRequestData
+import com.example.app_iliyan.dataclass.ReqFriendRequestEvent
 import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.dataclass.UserData
 import com.example.app_iliyan.dataclass.UserSignUpData
 import com.example.app_iliyan.helpers.MaskData
 import com.example.app_iliyan.helpers.Utils
+import com.example.app_iliyan.model.FriendRequest
+import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.LocalData
 import com.example.app_iliyan.model.Message
 import com.example.app_iliyan.model.User
@@ -91,6 +97,55 @@ abstract class SharedRepo {
     val IdEventData = IdEventData(encodedEventType, IdData)
 
     val jsonString = Json.encodeToString(IdEventData)
+
+    val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
+
+    return server
+  }
+
+  suspend fun encodeAndSendAddFriendRequestByEvent(
+    event: String,
+    friendRequest: FriendRequest
+  ): ServerResponse {
+
+    val encodedEventType = MaskData.base64Encode(event)
+
+    val friendRequestData =
+      ReqFriendRequestData(
+        MaskData.base64Encode(friendRequest.sender.email),
+        MaskData.base64Encode(friendRequest.status),
+        MaskData.base64Encode(friendRequest.recipient.email)
+      )
+
+    val friendRequestEvent = ReqFriendRequestEvent(encodedEventType, friendRequestData)
+
+    val jsonString = Json.encodeToString(friendRequestEvent)
+
+    val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
+
+    return server
+  }
+
+  suspend fun encodeAndSendGroupChatByEvent(event: String, groupChat: GroupChat): ServerResponse {
+
+    val encodedEventType = MaskData.base64Encode(event)
+
+    val groupChatData =
+      GroupChatData(
+        groupChat.id,
+        MaskData.base64Encode(groupChat.name),
+        groupChat.users.map { user ->
+          UserData(
+            MaskData.base64Encode(user.username),
+            MaskData.base64Encode(user.email),
+            MaskData.base64Encode(user.password)
+          )
+        }
+      )
+
+    val groupChatEvent = ReqCreateGroupChatEvent(encodedEventType, groupChatData)
+
+    val jsonString = Json.encodeToString(groupChatEvent)
 
     val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
 

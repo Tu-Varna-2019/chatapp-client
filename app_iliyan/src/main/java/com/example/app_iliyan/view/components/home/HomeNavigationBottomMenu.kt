@@ -27,10 +27,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.state.UserOptions
+import com.example.app_iliyan.view.components.dialog_box.DialogAddGroupChat
+import com.example.app_iliyan.view.components.dialog_box.DialogSendFriendRequest
+import com.example.app_iliyan.view.components.dialog_box.SnackbarManager
 import com.example.app_iliyan.view_model.HomeViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -39,7 +46,11 @@ fun HomeNavigationBottomMenu(
   friendrequestList: List<FriendRequest>,
   userOptions: UserOptions
 ) {
+
+  val homeViewModel: HomeViewModel = viewModel()
   var showMenu by remember { mutableStateOf(false) }
+  val showAddFriendDialog = remember { mutableStateOf(false) }
+  val showAddChatDialog = remember { mutableStateOf(false) }
 
   Scaffold(
     bottomBar = {
@@ -95,12 +106,45 @@ fun HomeNavigationBottomMenu(
             modifier = Modifier.align(Alignment.TopEnd)
           ) {
             DropdownMenuItem(
-              onClick = { /* Handle "Option 1" action */},
+              onClick = { showAddChatDialog.value = true },
               text = { Text("Create new chat") }
             )
             DropdownMenuItem(
-              onClick = { /* Handle "Option 2" action */},
+              onClick = { showAddFriendDialog.value = true },
               text = { Text("Add friend") }
+            )
+          }
+          // Dialog box for sending friend request
+          if (showAddFriendDialog.value) {
+            DialogSendFriendRequest(
+              onConfirm = { recipientEmail ->
+                CoroutineScope(Dispatchers.Main).launch {
+                  homeViewModel.handleSendFriendRequestClick(recipientEmail) { resultMessage ->
+                    CoroutineScope(Dispatchers.Main).launch {
+                      SnackbarManager.showSnackbar(resultMessage)
+                    }
+                  }
+                  showAddFriendDialog.value = false
+                }
+              },
+              onDismiss = { showAddFriendDialog.value = false }
+            )
+          }
+
+          // Dialog box for creating new chat
+          if (showAddChatDialog.value) {
+            DialogAddGroupChat(
+              onConfirm = { groupchatName ->
+                CoroutineScope(Dispatchers.Main).launch {
+                  homeViewModel.handleCreateGroupChatClick(groupchatName) { resultMessage ->
+                    CoroutineScope(Dispatchers.Main).launch {
+                      SnackbarManager.showSnackbar(resultMessage)
+                    }
+                  }
+                  showAddChatDialog.value = false
+                }
+              },
+              onDismiss = { showAddChatDialog.value = false }
             )
           }
         }

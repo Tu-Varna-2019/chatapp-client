@@ -78,6 +78,14 @@ class HomeViewModel() : ViewModel(), ChatInterface {
     if (isPasswordChanged) logoutEvent.value = true
   }
 
+  suspend fun handleSendFriendRequestClick(recipientEmail: String, onResult: (String) -> Unit) {
+    chatRepo.friendRequestRepo.handleSendFriendRequest(recipientEmail, onResult)
+  }
+
+  suspend fun handleCreateGroupChatClick(groupchatName: String, onResult: (String) -> Unit) {
+    chatRepo.groupChatRepo.handleCreateGroupChat(groupchatName, onResult)
+  }
+
   companion object {
     fun handleSelectedTabClick(selectedTab: UserOptions) {
       when (selectedTab.selectedTab) {

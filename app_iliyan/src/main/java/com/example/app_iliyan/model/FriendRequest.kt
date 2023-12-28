@@ -8,10 +8,12 @@ class FriendRequest {
   var id by mutableStateOf(0)
   var status by mutableStateOf("")
   var recipient by mutableStateOf(User("", "", ""))
+  var sender by mutableStateOf(User("", "", ""))
 
-  constructor(id: Int, status: String, recipient: User) {
+  constructor(id: Int, status: String, recipient: User, sender: User) {
     this.id = id
     this.status = status
     this.recipient = recipient
+    this.sender = sender
   }
 }

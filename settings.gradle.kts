@@ -14,5 +14,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Chat app"
-include(":app")
 include(":app_iliyan")

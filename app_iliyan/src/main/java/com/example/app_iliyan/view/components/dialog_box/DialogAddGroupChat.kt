@@ -8,41 +8,34 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import com.example.app_iliyan.helpers.Utils
 
 @Composable
-fun DialogConfirmDeleteAccount(
-  title: String,
-  message: String,
-  onConfirm: (String) -> Unit,
-  onDismiss: () -> Unit
-) {
+fun DialogAddGroupChat(onConfirm: (String) -> Unit, onDismiss: () -> Unit) {
   val openDialog = remember { mutableStateOf(true) }
-  var password = remember { mutableStateOf("") }
+  val groupchatName = remember { mutableStateOf("") }
 
-  var isPasswordError = password.value.isEmpty() || Utils.isValidPassword(password.value)
+  val isConfirmBtnDisabled = groupchatName.value.isEmpty()
+
   if (openDialog.value) {
     AlertDialog(
       onDismissRequest = { openDialog.value = false },
-      title = { Text(text = title) },
+      title = { Text(text = "Create new group chat") },
       text = {
         Column {
-          Text(text = message)
+          Text(text = "Enter group chat name")
           TextField(
-            value = password.value,
-            visualTransformation = PasswordVisualTransformation(),
-            isError = isPasswordError,
-            onValueChange = { password.value = it },
-            placeholder = { Text("Enter your password") }
+            value = groupchatName.value,
+            isError = isConfirmBtnDisabled,
+            onValueChange = { groupchatName.value = it },
+            placeholder = { Text("Name cannot be empty") }
           )
         }
       },
       confirmButton = {
         Button(
-          enabled = !isPasswordError,
+          enabled = !isConfirmBtnDisabled,
           onClick = {
-            onConfirm(password.value)
+            onConfirm(groupchatName.value)
             openDialog.value = false
           }
         ) {

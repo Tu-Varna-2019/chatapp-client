@@ -14,14 +14,9 @@ import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.LocalData
 
 @Composable
-fun DialogRenameEmail(
-  title: String,
-  message: String,
-  onConfirm: (String) -> Unit,
-  onDismiss: () -> Unit
-) {
+fun DialogSendFriendRequest(onConfirm: (String) -> Unit, onDismiss: () -> Unit) {
   val openDialog = remember { mutableStateOf(true) }
-  val email = remember { mutableStateOf(LocalData.getAuthenticatedUser()?.email ?: "") }
+  val email = remember { mutableStateOf("") }
   val initialEmail = LocalData.getAuthenticatedUser()?.email ?: ""
 
   val isConfirmBtnDisabled =
@@ -30,15 +25,15 @@ fun DialogRenameEmail(
   if (openDialog.value) {
     AlertDialog(
       onDismissRequest = { openDialog.value = false },
-      title = { Text(text = title) },
+      title = { Text(text = "Add friend") },
       text = {
         Column {
-          Text(text = message)
+          Text(text = "Enter your friend's email")
           TextField(
             value = email.value,
             isError = isConfirmBtnDisabled,
             onValueChange = { email.value = it },
-            placeholder = { Text("Enter your email") }
+            placeholder = { Text("Enter email") }
           )
           // Display error message
           if (isConfirmBtnDisabled) {
@@ -47,7 +42,7 @@ fun DialogRenameEmail(
               if (email.value.isEmpty()) {
                 "Email is empty"
               } else if (email.value == initialEmail) {
-                "Email cannot be the same"
+                "You cannot add yourself as a friend"
               } else {
                 "Email is invalid"
               }

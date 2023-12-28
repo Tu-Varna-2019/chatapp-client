@@ -53,7 +53,8 @@ class ServerDataHandler {
       return FriendRequest(
         id = friendrequestData.id,
         status = friendrequestData.status,
-        recipient = recipient
+        recipient = recipient,
+        sender = LocalData.getAuthenticatedUser()!!
       )
     }
 

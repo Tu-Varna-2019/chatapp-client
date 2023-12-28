@@ -4,6 +4,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable data class IdEventData(val eventType: String, val data: IdData)
 
+@Serializable
+data class ReqFriendRequestEvent(val eventType: String, val data: ReqFriendRequestData)
+
+@Serializable data class ReqCreateGroupChatEvent(val eventType: String, val data: GroupChatData)
+
+@Serializable
+data class ReqFriendRequestData(
+  val emailSender: String,
+  val status: String,
+  val emailRecipient: String
+)
+
 @Serializable data class CreateMessageEvent(val eventType: String, val data: CreateMessageData)
 
 @Serializable data class CreateMessageData(val message: MessageData, val groupchatid: String)

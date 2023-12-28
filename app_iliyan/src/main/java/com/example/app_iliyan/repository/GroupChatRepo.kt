@@ -1,9 +1,12 @@
 package com.example.app_iliyan.repository
 
+import android.util.Log
 import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.LocalData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class GroupChatRepo : SharedRepo() {
   suspend fun getAllGroupChatsAuthUser(): List<GroupChat> {
@@ -27,5 +30,32 @@ class GroupChatRepo : SharedRepo() {
       Utils.logger.error("getAllGroupChatsAuthUser: {}", e.message.toString())
     }
     return emptyList()
+  }
+
+  suspend fun handleCreateGroupChat(groupchatName: String, onResult: (String) -> Unit): Boolean {
+    return withContext(Dispatchers.Main) {
+      try {
+        val groupChat =
+          GroupChat(
+            id = 0,
+            name = groupchatName,
+            users = listOf(LocalData.getAuthenticatedUser()!!)
+          )
+        val server: ServerResponse = encodeAndSendGroupChatByEvent("CreateGroupChat", groupChat)
+
+        if (server.response.status == "Success") {
+
+          onResult(server.response.message)
+          return@withContext true
+        } else {
+          onResult(server.response.status + " : " + server.response.message)
+          return@withContext false
+        }
+      } catch (e: Exception) {
+        Log.e("CreateGroupChat", e.message.toString())
+        onResult("Error, please try again later")
+        return@withContext false
+      }
+    }
   }
 }
