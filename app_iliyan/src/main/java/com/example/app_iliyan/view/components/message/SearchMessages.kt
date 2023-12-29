@@ -36,9 +36,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.app_iliyan.R
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.Message
-import com.example.app_iliyan.view.components.LoadingAnimation
+import com.example.app_iliyan.view.components.isChatLoadedIndicator
 import com.example.app_iliyan.view_model.MessageViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -74,7 +75,11 @@ fun SearchFieldMessages(groupChat: GroupChat) {
     )
 
     if (filteredMessages.isEmpty()) {
-      LoadingAnimation()
+      isChatLoadedIndicator(
+        messageContent = "No messages found!",
+        isChatLoaded = filteredMessages.isEmpty(),
+        image = R.drawable.no_chat
+      )
     } else {
       LazyColumn { items(filteredMessages) { message -> MessageBubble(message = message) } }
     }
@@ -106,7 +111,12 @@ fun SendMessage(groupChat: GroupChat) {
       style = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.SemiBold)
     )
 
-    if (isLoading.value) LoadingAnimation()
+    if (isLoading.value)
+      isChatLoadedIndicator(
+        messageContent = "No messages found!",
+        isChatLoaded = isLoading.value,
+        image = R.drawable.no_chat
+      )
 
     TextField(
       value = typedMessage.value,

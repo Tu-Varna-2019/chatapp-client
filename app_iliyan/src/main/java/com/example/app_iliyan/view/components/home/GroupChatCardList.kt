@@ -2,7 +2,6 @@ package com.example.app_iliyan.view.components.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,25 +28,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.app_iliyan.R
 import com.example.app_iliyan.model.GroupChat
+import com.example.app_iliyan.view.components.isChatLoadedIndicator
 import com.example.app_iliyan.view_model.HomeViewModel
 
 @Composable
 fun GroupChatCardList(items: List<GroupChat>) {
   if (items.isEmpty()) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-      Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-      ) {
-        Image(
-          painter = painterResource(id = R.drawable.no_chat),
-          contentDescription = "Chat Icon",
-          modifier = Modifier.size(100.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "No group chats yet", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-      }
-    }
+    isChatLoadedIndicator(
+      messageContent = "No group chats found!",
+      isChatLoaded = items.isEmpty(),
+      image = R.drawable.no_chat
+    )
   } else {
     LazyColumn { items(items) { item -> GroupChatCard(item) } }
   }

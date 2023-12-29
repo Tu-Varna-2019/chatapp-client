@@ -11,8 +11,10 @@ import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.repository.ChatInterface
 import com.example.app_iliyan.repository.ChatRepo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class HomeViewModel() : ViewModel(), ChatInterface {
@@ -27,16 +29,19 @@ class HomeViewModel() : ViewModel(), ChatInterface {
 
   fun fetchGroupChatsFriendRequests() {
     viewModelScope.launch(Dispatchers.Main) {
-      try {
-        // Group chat
-        val fetchGroupChat = chatRepo.groupChatRepo.getAllGroupChatsAuthUser()
+      while (isActive) {
+        try {
+          // Group chat
+          val fetchGroupChat = chatRepo.groupChatRepo.getAllGroupChatsAuthUser()
 
-        _groupChats.value = fetchGroupChat
-        // Friend request
-        val fetchFriendRequest = chatRepo.friendRequestRepo.getAllFriendRequestsAuthUser()
-        _friendRequests.value = fetchFriendRequest
-      } catch (e: Exception) {
-        Utils.logger.error("HomeViewModel", "Error fetching group chats/friend requests!", e)
+          _groupChats.value = fetchGroupChat
+          // Friend request
+          val fetchFriendRequest = chatRepo.friendRequestRepo.getAllFriendRequestsAuthUser()
+          _friendRequests.value = fetchFriendRequest
+        } catch (e: Exception) {
+          Utils.logger.error("HomeViewModel", "Error fetching group chats/friend requests!", e)
+        }
+        delay(Utils.SERVER_REQUEST_DELAY)
       }
     }
   }
@@ -93,8 +98,8 @@ class HomeViewModel() : ViewModel(), ChatInterface {
         "Chat" -> {
           selectedTab.selectedTab = "Chat"
         }
-        "Contacts" -> {
-          selectedTab.selectedTab = "Contacts"
+        "Friends" -> {
+          selectedTab.selectedTab = "Friends"
         }
         "Settings" -> {
           selectedTab.selectedTab = "Settings"

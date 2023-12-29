@@ -1,7 +1,6 @@
 package com.example.app_iliyan.view.components.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,24 +26,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.app_iliyan.R
 import com.example.app_iliyan.model.FriendRequest
+import com.example.app_iliyan.view.components.isChatLoadedIndicator
 
 @Composable
 fun FriendRequestCardList(items: List<FriendRequest>) {
   if (items.isEmpty()) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-      Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-      ) {
-        Image(
-          painter = painterResource(id = R.drawable.no_contact),
-          contentDescription = "Chat Icon",
-          modifier = Modifier.size(100.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "No contacts yet", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-      }
-    }
+    isChatLoadedIndicator(
+      messageContent = "You don't have any invited friends yet!",
+      isChatLoaded = items.isEmpty(),
+      image = R.drawable.no_contact
+    )
   } else {
     LazyColumn { items(items) { item -> FriendRequestCard(item) } }
   }

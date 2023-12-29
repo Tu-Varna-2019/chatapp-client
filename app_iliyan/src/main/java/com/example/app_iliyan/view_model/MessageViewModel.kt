@@ -10,8 +10,10 @@ import com.example.app_iliyan.model.Message
 import com.example.app_iliyan.repository.ChatInterface
 import com.example.app_iliyan.repository.ChatRepo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class MessageViewModel : ViewModel(), ChatInterface {
@@ -26,12 +28,15 @@ class MessageViewModel : ViewModel(), ChatInterface {
 
   fun fetchMessagesByGroupChat(groupChatDataArg: GroupChatData) {
     viewModelScope.launch(Dispatchers.Main) {
-      try {
-        // Message
-        val fetchMessages = chatRepo.messageRepo.getAllMessages(groupChatDataArg)
-        _selectedGroupChat.value = fetchMessages
-      } catch (e: Exception) {
-        Utils.logger.error("Error fetching messages!")
+      while (isActive) {
+        try {
+          // Fetch messages
+          val fetchMessages = chatRepo.messageRepo.getAllMessages(groupChatDataArg)
+          _selectedGroupChat.value = fetchMessages
+        } catch (e: Exception) {
+          Utils.logger.error("Error fetching messages!")
+        }
+        delay(Utils.SERVER_REQUEST_DELAY)
       }
     }
   }

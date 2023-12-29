@@ -42,7 +42,6 @@ class MessageActivity : ComponentActivity() {
       } catch (e: Exception) {
         null
       }
-
     if (groupChat != null) {
       messageViewModel.fetchMessagesByGroupChat(groupChat)
     }

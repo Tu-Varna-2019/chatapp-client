@@ -66,10 +66,10 @@ fun HomeNavigationBottomMenu(
         )
         NavigationBarItem(
           icon = { Icon(Icons.Filled.AccountBox, contentDescription = null) },
-          label = { Text("Contacts") },
-          selected = userOptions.selectedTab == "Contacts",
+          label = { Text("Friends") },
+          selected = userOptions.selectedTab == "Friends",
           onClick = {
-            userOptions.selectedTab = "Contacts"
+            userOptions.selectedTab = "Friends"
             HomeViewModel.handleSelectedTabClick(userOptions)
           }
         )
