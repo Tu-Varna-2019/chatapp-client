@@ -5,13 +5,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,9 +25,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.app_iliyan.R
 import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.User
 import com.example.app_iliyan.navigation.LoginRegisterNavigationHandler
@@ -43,7 +48,7 @@ class LoginActivity : ComponentActivity() {
 
     val loginRegisterNavigationHandler = LoginRegisterNavigationHandler()
     val loginRegisterViewModel: LoginRegisterViewModel by viewModels()
-    val userObj = User("", "", "")
+    val userObj = User(0, "", "", "")
 
     setContent {
       SnackbarManager.ScaffoldSnackbar {
@@ -82,8 +87,26 @@ fun UserLoginForm(user: User, onLoginClick: () -> Unit, onGotoSignUpClick: () ->
   val isPasswordError = user.password.isEmpty() || Utils.isValidPassword(user.password)
   val isLoginBtnDisabled = isEmailError || isPasswordError
 
-  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-    Column(modifier = Modifier.fillMaxWidth().padding(13.dp)) {
+  Box(contentAlignment = Alignment.TopCenter) {
+    Column(modifier = Modifier.padding(13.dp)) {
+      Text(
+        text = "Login",
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally),
+        fontWeight = FontWeight.Bold,
+        fontSize = 30.sp
+      )
+
+      Spacer(modifier = Modifier.height(70.dp))
+
+      Image(
+        painter = painterResource(id = R.drawable.no_chat),
+        contentDescription = "Chat Icon",
+        modifier = Modifier.size(110.dp).fillMaxWidth().align(Alignment.CenterHorizontally)
+      )
+
+      Spacer(modifier = Modifier.height(60.dp))
+
       TextField(
         value = user.email,
         onValueChange = { user.email = it },
@@ -144,7 +167,7 @@ fun UserLoginForm(user: User, onLoginClick: () -> Unit, onGotoSignUpClick: () ->
 @Preview(showBackground = true)
 @Composable
 fun UserLoginFormPreview() {
-  val dummyUser = User("", "", "")
+  val dummyUser = User(0, "", "", "")
   var message by remember { mutableStateOf("") }
   UserLoginForm(
     user = dummyUser,

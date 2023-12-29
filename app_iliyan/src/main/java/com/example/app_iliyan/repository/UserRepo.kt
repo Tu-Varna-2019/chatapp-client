@@ -11,7 +11,7 @@ class UserRepo : SharedRepo() {
   suspend fun handleSignUpUserClick(user: User, onResult: (String) -> Unit): Boolean {
     return withContext(Dispatchers.Main) {
       try {
-        val server: ServerResponse = encodeAndSendUserDataByEvent("SignUp", user)
+        val server: ServerResponse = sendUserData("SignUp", user)
 
         if (server.response.status == "Success") {
           onResult(server.response.message)
@@ -31,7 +31,7 @@ class UserRepo : SharedRepo() {
   suspend fun handleLoginUserClick(user: User, onResult: (String) -> Unit): Boolean {
     return withContext(Dispatchers.Main) {
       try {
-        val server: ServerResponse = encodeAndSendUserDataByEvent("Login", user)
+        val server: ServerResponse = sendUserData("Login", user)
 
         if (server.response.status == "Success") {
 
@@ -61,11 +61,12 @@ class UserRepo : SharedRepo() {
       try {
         val user =
           User(
+            0,
             LocalData.getAuthenticatedUser()?.username ?: "",
             LocalData.getAuthenticatedUser()?.email ?: "",
             userEnteredPassword
           )
-        val server: ServerResponse = encodeAndSendUserDataByEvent("DeleteAccount", user)
+        val server: ServerResponse = sendUserData("DeleteAccount", user)
 
         if (server.response.status == "Success") {
 
@@ -91,11 +92,12 @@ class UserRepo : SharedRepo() {
       try {
         val user =
           User(
+            0,
             userEnteredUsername,
             LocalData.getAuthenticatedUser()?.email ?: "",
             LocalData.getAuthenticatedUser()?.password ?: ""
           )
-        val server: ServerResponse = encodeAndSendUserDataByEvent("RenameUsername", user)
+        val server: ServerResponse = sendUserData("RenameUsername", user)
 
         if (server.response.status == "Success") {
           onResult(server.response.message)
@@ -126,12 +128,13 @@ class UserRepo : SharedRepo() {
         // Reason: avoid creating new dataclass for this purpose
         val user =
           User(
+            0,
             LocalData.getAuthenticatedUser()?.email ?: "",
             userEnteredEmail,
             LocalData.getAuthenticatedUser()?.password ?: ""
           )
 
-        val server: ServerResponse = encodeAndSendUserDataByEvent("RenameEmail", user)
+        val server: ServerResponse = sendUserData("RenameEmail", user)
 
         if (server.response.status == "Success") {
 
@@ -164,12 +167,13 @@ class UserRepo : SharedRepo() {
         // Reason: avoid creating new dataclass for this purpose
         val user =
           User(
+            0,
             userEnteredNewPassword,
             LocalData.getAuthenticatedUser()?.email ?: "",
             userEnteredOldPassword
           )
 
-        val server: ServerResponse = encodeAndSendUserDataByEvent("ChangePassword", user)
+        val server: ServerResponse = sendUserData("ChangePassword", user)
 
         if (server.response.status == "Success") {
 

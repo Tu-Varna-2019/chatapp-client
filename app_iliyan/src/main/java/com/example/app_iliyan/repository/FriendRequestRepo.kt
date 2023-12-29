@@ -13,16 +13,13 @@ class FriendRequestRepo : SharedRepo() {
   suspend fun getAllFriendRequestsAuthUser(): List<FriendRequest> {
     try {
       val server: ServerResponse =
-        encodeAndSendUserDataByEvent(
-          "GetFriendRequestsAuthUser",
-          LocalData.getAuthenticatedUser()!!
-        )
+        sendUserData("GetFriendRequestsAuthUser", LocalData.getAuthenticatedUser()!!)
 
       if (server.response.status == "Success" && server.response.friendrequests != null) {
 
         val friendrequestList =
           server.response.friendrequests.map { friendrequestData ->
-            ServerDataHandler.convertFriendRequestDataToModel(friendrequestData.friendrequest)
+            ServerDataHandler.convertFriendRequestDataToModel(friendrequestData)
           }
 
         return friendrequestList
@@ -44,10 +41,9 @@ class FriendRequestRepo : SharedRepo() {
             id = 0,
             status = "Pending",
             sender = LocalData.getAuthenticatedUser()!!,
-            recipient = User(username = "", email = recipientEmail, password = "")
+            recipient = User(0, username = "", email = recipientEmail, password = "")
           )
-        val server: ServerResponse =
-          encodeAndSendAddFriendRequestByEvent("SendFriendRequest", friendRequest)
+        val server: ServerResponse = sendAddFriendRequest("SendFriendRequest", friendRequest)
 
         if (server.response.status == "Success") {
 

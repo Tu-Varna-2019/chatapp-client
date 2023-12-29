@@ -7,8 +7,8 @@ import androidx.compose.runtime.setValue
 class FriendRequest {
   var id by mutableStateOf(0)
   var status by mutableStateOf("")
-  var recipient by mutableStateOf(User("", "", ""))
-  var sender by mutableStateOf(User("", "", ""))
+  var recipient by mutableStateOf(User(0, "", "", ""))
+  var sender by mutableStateOf(User(0, "", "", ""))
 
   constructor(id: Int, status: String, recipient: User, sender: User) {
     this.id = id

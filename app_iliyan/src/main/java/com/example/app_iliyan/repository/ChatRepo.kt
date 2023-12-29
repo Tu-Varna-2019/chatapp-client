@@ -1,8 +1,8 @@
 package com.example.app_iliyan.repository
 
 class ChatRepo {
-  public val userRepo: UserRepo = UserRepo()
-  public val groupChatRepo: GroupChatRepo = GroupChatRepo()
-  public val friendRequestRepo: FriendRequestRepo = FriendRequestRepo()
-  public val messageRepo: MessageRepo = MessageRepo()
+  val userRepo: UserRepo = UserRepo()
+  val groupChatRepo: GroupChatRepo = GroupChatRepo()
+  val friendRequestRepo: FriendRequestRepo = FriendRequestRepo()
+  val messageRepo: MessageRepo = MessageRepo()
 }

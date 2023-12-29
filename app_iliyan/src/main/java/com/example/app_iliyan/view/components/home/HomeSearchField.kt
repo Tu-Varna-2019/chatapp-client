@@ -75,13 +75,13 @@ fun HomeSearchField(
       // Display filtered list by selected tab
       when (userOptions.selectedTab) {
         "Chat" -> {
-          GroupChatList(items = filteredGroupChat)
+          GroupChatCardList(items = filteredGroupChat)
         }
         "Contacts" -> {
-          ContactList(items = filteredContactChat)
+          FriendRequestCardList(items = filteredContactChat)
         }
         "Settings" -> {
-          SettingsOptionList()
+          SettingsOptions()
         }
       }
     }

@@ -11,19 +11,15 @@ class MessageRepo : SharedRepo() {
     // Convert the GroupChatData to a GroupChat model
     val groupChatArg = ServerDataHandler.convertGroupChatDataToModel(groupChatDataArg)
     try {
-      val server: ServerResponse =
-        encodeAndSendIDByEvent("GetMessagesByGroupID", groupChatDataArg.id)
+      val server: ServerResponse = SendID("GetMessagesByGroupID", groupChatDataArg.id)
 
       if (server.response.status == "Success" && server.response.messages != null) {
 
         val messageList =
           server.response.messages.map { messageData ->
-            ServerDataHandler.convertMessageDataToModel(messageData.message)
+            ServerDataHandler.convertMessageDataToModel(messageData)
           }
-
         groupChatArg.messages = messageList
-
-        return groupChatArg
       } else {
         Utils.logger.warn("getAllMessages: Not Messages Found")
         return groupChatArg
@@ -41,18 +37,13 @@ class MessageRepo : SharedRepo() {
   ): List<Message> {
     try {
       val server: ServerResponse =
-        encodeAndSendMessageDataByEvent(
-          "SendMessageByGroupID",
-          groupChatID,
-          typedMessage,
-          attachmentURL
-        )
+        sendMessageData("SendMessageByGroupID", groupChatID, typedMessage, attachmentURL)
 
       if (server.response.status == "Success" && server.response.messages != null) {
 
         val messageList =
           server.response.messages.map { messageData ->
-            ServerDataHandler.convertMessageDataToModel(messageData.message)
+            ServerDataHandler.convertMessageDataToModel(messageData)
           }
 
         return messageList
@@ -68,7 +59,7 @@ class MessageRepo : SharedRepo() {
 
   suspend fun deleteMessage(messageID: Int): Boolean {
     try {
-      val server: ServerResponse = encodeAndSendIDByEvent("deleteMessageByGroupID", messageID)
+      val server: ServerResponse = SendID("deleteMessageByGroupID", messageID)
 
       if (server.response.status == "Success") {
         return true

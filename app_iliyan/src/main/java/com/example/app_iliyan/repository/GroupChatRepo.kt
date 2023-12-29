@@ -12,13 +12,13 @@ class GroupChatRepo : SharedRepo() {
   suspend fun getAllGroupChatsAuthUser(): List<GroupChat> {
     try {
       val server: ServerResponse =
-        encodeAndSendUserDataByEvent("GetGroupChatsAuthUser", LocalData.getAuthenticatedUser()!!)
+        sendUserData("GetGroupChatsAuthUser", LocalData.getAuthenticatedUser()!!)
 
       if (server.response.status == "Success" && server.response.groupchats != null) {
 
         val groupchatList =
           server.response.groupchats.map { groupChatData ->
-            ServerDataHandler.convertGroupChatDataToModel(groupChatData.groupchat)
+            ServerDataHandler.convertGroupChatDataToModel(groupChatData)
           }
 
         return groupchatList
@@ -41,7 +41,7 @@ class GroupChatRepo : SharedRepo() {
             name = groupchatName,
             users = listOf(LocalData.getAuthenticatedUser()!!)
           )
-        val server: ServerResponse = encodeAndSendGroupChatByEvent("CreateGroupChat", groupChat)
+        val server: ServerResponse = sendGroupChat("CreateGroupChat", groupChat)
 
         if (server.response.status == "Success") {
 

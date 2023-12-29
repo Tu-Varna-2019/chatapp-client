@@ -89,12 +89,12 @@ fun HomeLayoutPreview() {
 
   val friendrequestList: List<FriendRequest> =
     listOf(
-      FriendRequest(0, "Friend 1", User("1", "1", "1"), User("1", "1", "1")),
-      FriendRequest(0, "Friend 2", User("2", "2", "2"), User("1", "1", "1")),
-      FriendRequest(0, "Friend 3", User("3", "3", "3"), User("1", "1", "1")),
-      FriendRequest(0, "Friend 4", User("4", "4", "4"), User("1", "1", "1")),
-      FriendRequest(0, "Friend 5", User("5", "5", "5"), User("1", "1", "1")),
-      FriendRequest(0, "Friend 6", User("6", "6", "6"), User("1", "1", "1"))
+      FriendRequest(0, "Friend 1", User(0, "1", "1", "1"), User(0, "1", "1", "1")),
+      FriendRequest(0, "Friend 2", User(0, "2", "2", "2"), User(0, "1", "1", "1")),
+      FriendRequest(0, "Friend 3", User(0, "3", "3", "3"), User(0, "1", "1", "1")),
+      FriendRequest(0, "Friend 4", User(0, "4", "4", "4"), User(0, "1", "1", "1")),
+      FriendRequest(0, "Friend 5", User(0, "5", "5", "5"), User(0, "1", "1", "1")),
+      FriendRequest(0, "Friend 6", User(0, "6", "6", "6"), User(0, "1", "1", "1"))
     )
 
   HomeLayout(groupchatList = groupchatList, friendrequestList = friendrequestList)

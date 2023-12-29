@@ -30,6 +30,7 @@ class HomeViewModel() : ViewModel(), ChatInterface {
       try {
         // Group chat
         val fetchGroupChat = chatRepo.groupChatRepo.getAllGroupChatsAuthUser()
+
         _groupChats.value = fetchGroupChat
         // Friend request
         val fetchFriendRequest = chatRepo.friendRequestRepo.getAllFriendRequestsAuthUser()

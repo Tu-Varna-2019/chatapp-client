@@ -18,7 +18,7 @@ class LocalData : Application() {
       username: String,
       email: String,
     ) {
-      instance?.authenticatedUser = User(username, email, "")
+      instance?.authenticatedUser = User(0, username, email, "")
     }
 
     fun getAuthenticatedUser(): User? {

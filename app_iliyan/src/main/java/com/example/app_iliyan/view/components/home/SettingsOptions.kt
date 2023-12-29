@@ -42,7 +42,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun SettingsOptionList() {
+fun SettingsOptions() {
   val homeViewModel: HomeViewModel = viewModel()
   val item = LocalData.getAuthenticatedUser()
   val showAlertDialog = remember { mutableStateOf(false) }

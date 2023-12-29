@@ -10,7 +10,7 @@ class Message {
   var content by mutableStateOf("")
   var attachmentURL by mutableStateOf("")
   var timestamp by mutableStateOf("")
-  var sender by mutableStateOf(User("", "", ""))
+  var sender by mutableStateOf(User(0, "", "", ""))
 
   constructor(id: Int, content: String, attachmentURL: String, timestamp: String, sender: User) {
     this.id = id

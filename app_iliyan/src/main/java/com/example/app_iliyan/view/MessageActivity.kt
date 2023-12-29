@@ -80,16 +80,22 @@ fun GreetingPreview() {
     GroupChat(
       1,
       "GroupChat",
-      listOf(User("username", "email", "pass")),
+      listOf(User(0, "username", "email", "pass")),
       listOf(
         Message(
           1,
           "Hello",
           "https://www.google.com",
           "10:10:10",
-          User("username", "email", "pass")
+          User(0, "username", "email", "pass")
         ),
-        Message(1, "Hello", "https://www.google.com", "10:10:10", User("username", "email", "pass"))
+        Message(
+          1,
+          "Hello",
+          "https://www.google.com",
+          "10:10:10",
+          User(0, "username", "email", "pass")
+        )
       )
     )
   MessageLayout(groupChat = groupChat)
