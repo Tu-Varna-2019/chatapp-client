@@ -11,8 +11,7 @@ import kotlinx.coroutines.withContext
 class GroupChatRepo : SharedRepo() {
   suspend fun getAllGroupChatsAuthUser(): List<GroupChat> {
     try {
-      val server: ServerResponse =
-        sendUserData("GetGroupChatsAuthUser", LocalData.getAuthenticatedUser()!!)
+      val server: ServerResponse = sendUserData("GetGroupChats", LocalData.getAuthenticatedUser()!!)
 
       if (server.response.status == "Success" && server.response.groupchats != null) {
 

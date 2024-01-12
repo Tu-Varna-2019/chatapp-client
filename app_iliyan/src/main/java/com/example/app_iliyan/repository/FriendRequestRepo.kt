@@ -13,7 +13,7 @@ class FriendRequestRepo : SharedRepo() {
   suspend fun getAllFriendRequestsAuthUser(): List<FriendRequest> {
     try {
       val server: ServerResponse =
-        sendUserData("GetFriendRequestsAuthUser", LocalData.getAuthenticatedUser()!!)
+        sendUserData("GetFriendRequests", LocalData.getAuthenticatedUser()!!)
 
       if (server.response.status == "Success" && server.response.friendrequests != null) {
 
@@ -24,7 +24,7 @@ class FriendRequestRepo : SharedRepo() {
 
         return friendrequestList
       } else {
-        Utils.logger.warn("GetFriendRequestsAuthUser: No Friend requests Found")
+        Utils.logger.warn("GetFriendRequests: No Friend requests Found")
         return emptyList()
       }
     } catch (e: Exception) {

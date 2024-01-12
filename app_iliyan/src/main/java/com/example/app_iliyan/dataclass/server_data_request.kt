@@ -35,5 +35,9 @@ data class MessageData(
 ) : EventData()
 
 @Serializable
-data class FriendRequestData(val id: Int, val status: String, val recipient: UserData) :
-  EventData()
+data class FriendRequestData(
+  val id: Int,
+  val status: String,
+  val recipient: UserData,
+  val sender: UserData
+) : EventData()

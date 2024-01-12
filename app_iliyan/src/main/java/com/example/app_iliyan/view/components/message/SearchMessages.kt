@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
@@ -58,7 +59,7 @@ fun SearchFieldMessages(groupChat: GroupChat) {
     TextField(
       value = searchedFieldUsername.value,
       onValueChange = { newText -> searchedFieldUsername.value = newText },
-      modifier = Modifier.fillMaxWidth().padding(16.dp).fillMaxWidth(0.8f),
+      modifier = Modifier.fillMaxWidth().padding(36.dp).fillMaxWidth(0.8f),
       shape = RoundedCornerShape(22.dp),
       leadingIcon = {
         Icon(imageVector = Icons.Default.Search, contentDescription = "Search here")
@@ -94,13 +95,23 @@ fun SendMessage(groupChat: GroupChat) {
   val messageViewModel: MessageViewModel = viewModel()
   val isLoading = remember { mutableStateOf(false) }
 
-  Box(contentAlignment = Alignment.TopStart) {
+  Box(modifier = Modifier.fillMaxSize()) {
     Button(
       onClick = { messageViewModel.backHomeEvent.value = true },
+      modifier = Modifier.align(Alignment.TopStart).padding(16.dp),
       colors =
-        ButtonDefaults.buttonColors(contentColor = Color.Black, containerColor = Color.Transparent),
+        ButtonDefaults.buttonColors(contentColor = Color.Black, containerColor = Color.Transparent)
     ) {
-      Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+      Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+    }
+
+    Button(
+      onClick = { /* Handle menu button click here */},
+      modifier = Modifier.align(Alignment.TopEnd).padding(16.dp),
+      colors =
+        ButtonDefaults.buttonColors(contentColor = Color.Black, containerColor = Color.Transparent)
+    ) {
+      Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
     }
   }
 

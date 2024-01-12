@@ -11,7 +11,7 @@ class MessageRepo : SharedRepo() {
     // Convert the GroupChatData to a GroupChat model
     val groupChatArg = ServerDataHandler.convertGroupChatDataToModel(groupChatDataArg)
     try {
-      val server: ServerResponse = SendID("GetMessagesByGroupID", groupChatDataArg.id)
+      val server: ServerResponse = SendID("GetMessages", groupChatDataArg.id)
 
       if (server.response.status == "Success" && server.response.messages != null) {
 
@@ -37,7 +37,7 @@ class MessageRepo : SharedRepo() {
   ): List<Message> {
     try {
       val server: ServerResponse =
-        sendMessageData("SendMessageByGroupID", groupChatID, typedMessage, attachmentURL)
+        sendMessageData("SendMessage", groupChatID, typedMessage, attachmentURL)
 
       if (server.response.status == "Success" && server.response.messages != null) {
 
@@ -59,7 +59,7 @@ class MessageRepo : SharedRepo() {
 
   suspend fun deleteMessage(messageID: Int): Boolean {
     try {
-      val server: ServerResponse = SendID("deleteMessageByGroupID", messageID)
+      val server: ServerResponse = SendID("DeleteMessage", messageID)
 
       if (server.response.status == "Success") {
         return true
