@@ -1,9 +1,11 @@
 package com.example.app_iliyan.repository
 
-import com.example.app_iliyan.dataclass.Event
-import com.example.app_iliyan.dataclass.EventData
+import com.example.app_iliyan.dataclass.DataRequest
+import com.example.app_iliyan.dataclass.FilterRequest
+import com.example.app_iliyan.dataclass.FriendRequestData
 import com.example.app_iliyan.dataclass.GroupChatData
 import com.example.app_iliyan.dataclass.MessageData
+import com.example.app_iliyan.dataclass.ServerRequest
 import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.dataclass.UserData
 import com.example.app_iliyan.model.FriendRequest
@@ -21,13 +23,13 @@ abstract class SharedRepo {
 
   private fun convertToUserData(user: User): UserData {
 
-    return UserData(user.id.toString(), user.username, user.email, user.password)
+    return UserData(user.id, user.username, user.email, user.password)
   }
 
   private fun convertToMessageData(message: Message): MessageData {
 
     return MessageData(
-      message.id.toString(),
+      message.id,
       message.content,
       message.attachmentURL,
       message.timestamp,
@@ -35,14 +37,15 @@ abstract class SharedRepo {
     )
   }
 
-  private suspend inline fun <reified T : EventData> sendClientData(
+  private suspend inline fun <reified T : DataRequest> sendClientData(
     event: String,
-    data: T
+    data: T,
+    filter: FilterRequest? = null
   ): ServerResponse {
 
-    val eventData = EventData::class.java.newInstance()
+    val eventData = DataRequest::class.java.newInstance()
 
-    EventData::class.java.declaredFields.forEach { field ->
+    DataRequest::class.java.declaredFields.forEach { field ->
       if (field.type.isAssignableFrom(data::class.java)) {
         field.isAccessible = true
         field.set(eventData, data)
@@ -51,8 +54,9 @@ abstract class SharedRepo {
 
     val jsonElement = Json.encodeToJsonElement(data)
     val decodedData = Json.decodeFromJsonElement<T>(jsonElement)
-    val eventType = Event(event, decodedData)
-    val jsonString = Json.encodeToString(Event.serializer(), eventType)
+
+    val eventType = ServerRequest(event, decodedData, filter)
+    val jsonString = Json.encodeToString(ServerRequest.serializer(), eventType)
 
     val server: ServerResponse = SocketConnection.sendAndReceiveData(jsonString)
 
@@ -61,7 +65,11 @@ abstract class SharedRepo {
 
   suspend fun sendUserData(event: String, user: User): ServerResponse {
 
-    return sendClientData(event, EventData(user = convertToUserData(user)))
+    return sendClientData(
+      event,
+      data = DataRequest(user = convertToUserData(user)),
+      // filter = FilterRequest(friendrequest = filterFriendRequest)
+    )
   }
 
   suspend fun sendMessageData(
@@ -86,23 +94,27 @@ abstract class SharedRepo {
 
     return sendClientData(
       event,
-      EventData(message = convertToMessageData(message), groupchatid = groupChatID)
+      DataRequest(message = convertToMessageData(message), groupchatid = groupChatID)
     )
   }
 
   suspend fun SendID(event: String, id: Int): ServerResponse {
 
-    return sendClientData(event, EventData(id = id.toString()))
+    return sendClientData(event, DataRequest(id = id.toString()))
   }
 
   suspend fun sendAddFriendRequest(event: String, friendRequest: FriendRequest): ServerResponse {
 
     return sendClientData(
       event,
-      EventData(
-        status = friendRequest.status,
-        emailRecipient = friendRequest.recipient.email,
-        emailSender = friendRequest.sender.email
+      DataRequest(
+        friendrequest =
+          FriendRequestData(
+            friendRequest.id,
+            friendRequest.status,
+            convertToUserData(friendRequest.recipient),
+            convertToUserData(friendRequest.sender)
+          )
       )
     )
   }
@@ -116,6 +128,6 @@ abstract class SharedRepo {
         groupChat.users.map { user -> convertToUserData(user) }
       )
 
-    return sendClientData(event, EventData(groupchat = groupChatData))
+    return sendClientData(event, DataRequest(groupchat = groupChatData))
   }
 }

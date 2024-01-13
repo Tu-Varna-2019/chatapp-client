@@ -1,9 +1,9 @@
 package com.example.app_iliyan.repository
 
+import com.example.app_iliyan.dataclass.DataResponse
 import com.example.app_iliyan.dataclass.FriendRequestData
 import com.example.app_iliyan.dataclass.GroupChatData
 import com.example.app_iliyan.dataclass.MessageData
-import com.example.app_iliyan.dataclass.ResponseContent
 import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.dataclass.UserData
 import com.example.app_iliyan.helpers.NotificationService
@@ -27,18 +27,18 @@ class ServerDataHandler {
       } catch (e: Exception) {
         Utils.logger.error("Error: parseResponse: {}", e.message.toString())
       }
-      return ServerResponse(response = ResponseContent("Error", "Error"))
+      return ServerResponse(status = "Error", message = "Error", data = DataResponse())
     }
 
     fun sentNotification(jsonString: String) {
       val server: ServerResponse = parseResponse(jsonString)
 
-      if (server.response.message == "Notification sent!")
+      if (server.message == "Notification sent!")
         NotificationService.showNotification(
           LocalData.getAppContext(),
           // attachmentURL = GroupChatName
-          server.response.messages?.get(0)?.attachmentURL ?: "",
-          server.response.messages?.get(0)?.content ?: "",
+          server.data.messages?.get(0)?.attachmentURL ?: "",
+          server.data.messages?.get(0)?.content ?: "",
           1
         )
     }
@@ -85,7 +85,7 @@ class ServerDataHandler {
         )
 
       return Message(
-        id = messageData.id.toInt(),
+        id = messageData.id,
         content = messageData.content,
         attachmentURL = messageData.attachmentURL,
         timestamp = messageData.timestamp,
@@ -94,9 +94,7 @@ class ServerDataHandler {
     }
 
     fun convertListUserToListUserData(users: List<User>): List<UserData> {
-      return users.map { user ->
-        UserData(user.id.toString(), user.username, user.email, user.password)
-      }
+      return users.map { user -> UserData(user.id, user.username, user.email, user.password) }
     }
   }
 }

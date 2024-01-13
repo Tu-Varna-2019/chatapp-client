@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
+import com.example.app_iliyan.model.LocalData
 import com.example.app_iliyan.model.User
 import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.navigation.HomeNavigationHandler
@@ -22,7 +23,7 @@ class HomeActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
 
     // TODO: Remove this
-    // LocalData.setAuthenticatedUser("me2", "me@me.bg")
+    LocalData.setAuthenticatedUser("me2", "me@me.bg")
 
     val homeNavigationHandler = HomeNavigationHandler()
     val userOptionsObj = UserOptions("", "Chat")

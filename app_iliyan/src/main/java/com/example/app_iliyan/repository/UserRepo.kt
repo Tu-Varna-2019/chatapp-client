@@ -13,11 +13,11 @@ class UserRepo : SharedRepo() {
       try {
         val server: ServerResponse = sendUserData("SignUp", user)
 
-        if (server.response.status == "Success") {
-          onResult(server.response.message)
+        if (server.status == "Success") {
+          onResult(server.message)
           return@withContext true
         } else {
-          onResult(server.response.status + " : " + server.response.message)
+          onResult(server.status + " : " + server.message)
         }
       } catch (e: Exception) {
         Log.e("SignUpError", e.message.toString())
@@ -33,16 +33,16 @@ class UserRepo : SharedRepo() {
       try {
         val server: ServerResponse = sendUserData("Login", user)
 
-        if (server.response.status == "Success") {
+        if (server.status == "Success") {
 
           LocalData.setAuthenticatedUser(
-            server.response.user?.username.toString(),
-            server.response.user?.email.toString(),
+            server.data.user?.username.toString(),
+            server.data.user?.email.toString(),
           )
-          onResult(server.response.message)
+          onResult(server.message)
           return@withContext true
         } else {
-          onResult(server.response.status + " : " + server.response.message)
+          onResult(server.status + " : " + server.message)
         }
       } catch (e: Exception) {
         Log.e("LoginError", e.message.toString())
@@ -68,12 +68,12 @@ class UserRepo : SharedRepo() {
           )
         val server: ServerResponse = sendUserData("DeleteAccount", user)
 
-        if (server.response.status == "Success") {
+        if (server.status == "Success") {
 
-          onResult(server.response.message)
+          onResult(server.message)
           return@withContext true
         } else {
-          onResult(server.response.status + " : " + server.response.message)
+          onResult(server.status + " : " + server.message)
           return@withContext false
         }
       } catch (e: Exception) {
@@ -99,15 +99,15 @@ class UserRepo : SharedRepo() {
           )
         val server: ServerResponse = sendUserData("RenameUsername", user)
 
-        if (server.response.status == "Success") {
-          onResult(server.response.message)
+        if (server.status == "Success") {
+          onResult(server.message)
           LocalData.setAuthenticatedUser(
             userEnteredUsername,
             LocalData.getAuthenticatedUser()?.email ?: "",
           )
           return@withContext true
         } else {
-          onResult(server.response.status + " : " + server.response.message)
+          onResult(server.status + " : " + server.message)
           return@withContext false
         }
       } catch (e: Exception) {
@@ -136,16 +136,16 @@ class UserRepo : SharedRepo() {
 
         val server: ServerResponse = sendUserData("RenameEmail", user)
 
-        if (server.response.status == "Success") {
+        if (server.status == "Success") {
 
-          onResult(server.response.message)
+          onResult(server.message)
           LocalData.setAuthenticatedUser(
             LocalData.getAuthenticatedUser()?.username ?: "",
             userEnteredEmail,
           )
           return@withContext true
         } else {
-          onResult(server.response.status + " : " + server.response.message)
+          onResult(server.status + " : " + server.message)
           return@withContext false
         }
       } catch (e: Exception) {
@@ -175,13 +175,13 @@ class UserRepo : SharedRepo() {
 
         val server: ServerResponse = sendUserData("ChangePassword", user)
 
-        if (server.response.status == "Success") {
+        if (server.status == "Success") {
 
-          onResult(server.response.message)
+          onResult(server.message)
 
           return@withContext true
         } else {
-          onResult(server.response.status + " : " + server.response.message)
+          onResult(server.status + " : " + server.message)
           return@withContext false
         }
       } catch (e: Exception) {

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -85,7 +84,6 @@ class SignUpActivity : ComponentActivity() {
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserSignUpForm(user: User, onSignUpClick: () -> Unit, onBackClick: () -> Unit) {
   val isUsernameError = user.username.isEmpty()
@@ -106,7 +104,7 @@ fun UserSignUpForm(user: User, onSignUpClick: () -> Unit, onBackClick: () -> Uni
       Spacer(modifier = Modifier.height(70.dp))
 
       Image(
-        painter = painterResource(id = R.drawable.no_chat),
+        painter = painterResource(id = R.drawable.group),
         contentDescription = "Chat Icon",
         modifier = Modifier.size(110.dp).fillMaxWidth().align(Alignment.CenterHorizontally)
       )

@@ -13,10 +13,10 @@ class GroupChatRepo : SharedRepo() {
     try {
       val server: ServerResponse = sendUserData("GetGroupChats", LocalData.getAuthenticatedUser()!!)
 
-      if (server.response.status == "Success" && server.response.groupchats != null) {
+      if (server.status == "Success" && server.data.groupchats != null) {
 
         val groupchatList =
-          server.response.groupchats.map { groupChatData ->
+          server.data.groupchats.map { groupChatData ->
             ServerDataHandler.convertGroupChatDataToModel(groupChatData)
           }
 
@@ -42,12 +42,12 @@ class GroupChatRepo : SharedRepo() {
           )
         val server: ServerResponse = sendGroupChat("CreateGroupChat", groupChat)
 
-        if (server.response.status == "Success") {
+        if (server.status == "Success") {
 
-          onResult(server.response.message)
+          onResult(server.message)
           return@withContext true
         } else {
-          onResult(server.response.status + " : " + server.response.message)
+          onResult(server.status + " : " + server.message)
           return@withContext false
         }
       } catch (e: Exception) {

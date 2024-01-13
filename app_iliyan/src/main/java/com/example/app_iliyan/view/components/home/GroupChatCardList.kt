@@ -37,7 +37,7 @@ fun GroupChatCardList(items: List<GroupChat>) {
     isChatLoadedIndicator(
       messageContent = "No group chats found!",
       isChatLoaded = items.isEmpty(),
-      image = R.drawable.no_chat
+      image = R.drawable.group
     )
   } else {
     LazyColumn { items(items) { item -> GroupChatCard(item) } }

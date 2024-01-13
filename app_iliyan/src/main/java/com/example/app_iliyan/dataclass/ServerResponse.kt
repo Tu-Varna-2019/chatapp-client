@@ -2,12 +2,11 @@ package com.example.app_iliyan.dataclass
 
 import kotlinx.serialization.Serializable
 
-@Serializable data class ServerResponse(val response: ResponseContent)
+@Serializable
+data class ServerResponse(val status: String, val message: String, val data: DataResponse)
 
 @Serializable
-data class ResponseContent(
-  val status: String,
-  val message: String,
+data class DataResponse(
   val user: UserData? = null,
   val groupchats: List<GroupChatData>? = null,
   val messages: List<MessageData>? = null,

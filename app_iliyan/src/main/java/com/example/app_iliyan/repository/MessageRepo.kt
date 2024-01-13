@@ -13,10 +13,10 @@ class MessageRepo : SharedRepo() {
     try {
       val server: ServerResponse = SendID("GetMessages", groupChatDataArg.id)
 
-      if (server.response.status == "Success" && server.response.messages != null) {
+      if (server.status == "Success" && server.data.messages != null) {
 
         val messageList =
-          server.response.messages.map { messageData ->
+          server.data.messages.map { messageData ->
             ServerDataHandler.convertMessageDataToModel(messageData)
           }
         groupChatArg.messages = messageList
@@ -39,10 +39,10 @@ class MessageRepo : SharedRepo() {
       val server: ServerResponse =
         sendMessageData("SendMessage", groupChatID, typedMessage, attachmentURL)
 
-      if (server.response.status == "Success" && server.response.messages != null) {
+      if (server.status == "Success" && server.data.messages != null) {
 
         val messageList =
-          server.response.messages.map { messageData ->
+          server.data.messages.map { messageData ->
             ServerDataHandler.convertMessageDataToModel(messageData)
           }
 
@@ -61,7 +61,7 @@ class MessageRepo : SharedRepo() {
     try {
       val server: ServerResponse = SendID("DeleteMessage", messageID)
 
-      if (server.response.status == "Success") {
+      if (server.status == "Success") {
         return true
       } else {
         Utils.logger.warn("deleteMessage: Not Messages deleted")

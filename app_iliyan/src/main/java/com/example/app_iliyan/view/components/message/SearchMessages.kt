@@ -79,7 +79,7 @@ fun SearchFieldMessages(groupChat: GroupChat) {
       isChatLoadedIndicator(
         messageContent = "No messages found!",
         isChatLoaded = filteredMessages.isEmpty(),
-        image = R.drawable.no_chat
+        image = R.drawable.group
       )
     } else {
       LazyColumn { items(filteredMessages) { message -> MessageBubble(message = message) } }
@@ -126,7 +126,7 @@ fun SendMessage(groupChat: GroupChat) {
       isChatLoadedIndicator(
         messageContent = "No messages found!",
         isChatLoaded = isLoading.value,
-        image = R.drawable.no_chat
+        image = R.drawable.group
       )
 
     TextField(

@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">App_Iliyan</string>
+    <string name="app_name">Chat app by Iliyan Kostov</string>
     <string name="title_activity_message">MessageActivity</string>
 </resources>

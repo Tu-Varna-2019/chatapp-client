@@ -15,10 +15,10 @@ class FriendRequestRepo : SharedRepo() {
       val server: ServerResponse =
         sendUserData("GetFriendRequests", LocalData.getAuthenticatedUser()!!)
 
-      if (server.response.status == "Success" && server.response.friendrequests != null) {
+      if (server.status == "Success" && server.data.friendrequests != null) {
 
         val friendrequestList =
-          server.response.friendrequests.map { friendrequestData ->
+          server.data.friendrequests.map { friendrequestData ->
             ServerDataHandler.convertFriendRequestDataToModel(friendrequestData)
           }
 
@@ -45,12 +45,12 @@ class FriendRequestRepo : SharedRepo() {
           )
         val server: ServerResponse = sendAddFriendRequest("SendFriendRequest", friendRequest)
 
-        if (server.response.status == "Success") {
+        if (server.status == "Success") {
 
-          onResult(server.response.message)
+          onResult(server.message)
           return@withContext true
         } else {
-          onResult(server.response.status + " : " + server.response.message)
+          onResult(server.status + " : " + server.message)
           return@withContext false
         }
       } catch (e: Exception) {

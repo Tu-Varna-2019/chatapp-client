@@ -2,14 +2,18 @@ package com.example.app_iliyan.dataclass
 
 import kotlinx.serialization.Serializable
 
-@Serializable data class Event(val eventType: String, val data: EventData)
+@Serializable
+data class ServerRequest(
+  val eventType: String,
+  val data: DataRequest,
+  val filter: FilterRequest? = null
+)
+
+@Serializable data class FilterRequest(var friendrequest: FriendRequestData? = null)
 
 @Serializable
-data class EventData(
+data class DataRequest(
   val id: String? = null,
-  val emailSender: String? = null,
-  val status: String? = null,
-  val emailRecipient: String? = null,
   val groupchatid: String? = null,
   val groupchat: GroupChatData? = null,
   val user: UserData? = null,
@@ -20,11 +24,11 @@ data class EventData(
 @Serializable data class GroupChatData(val id: Int, val name: String, val users: List<UserData>)
 
 @Serializable
-data class UserData(val id: String, val username: String, val email: String, val password: String)
+data class UserData(val id: Int, val username: String, val email: String, val password: String)
 
 @Serializable
 data class MessageData(
-  val id: String,
+  val id: Int,
   val content: String,
   val attachmentURL: String,
   val timestamp: String,

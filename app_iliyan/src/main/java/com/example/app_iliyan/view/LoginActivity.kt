@@ -100,7 +100,7 @@ fun UserLoginForm(user: User, onLoginClick: () -> Unit, onGotoSignUpClick: () ->
       Spacer(modifier = Modifier.height(70.dp))
 
       Image(
-        painter = painterResource(id = R.drawable.no_chat),
+        painter = painterResource(id = R.drawable.group),
         contentDescription = "Chat Icon",
         modifier = Modifier.size(110.dp).fillMaxWidth().align(Alignment.CenterHorizontally)
       )
