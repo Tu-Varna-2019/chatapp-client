@@ -23,7 +23,7 @@ class SocketConnection {
           Socket(SERVER_ADDRESS, PORT).use { socket ->
             BufferedWriter(OutputStreamWriter(socket.getOutputStream())).use { writer ->
               BufferedReader(InputStreamReader(socket.getInputStream())).use { reader ->
-                Utils.logger.info("Sending data: $jsonString")
+                Utils.logger.error("Sending data: $jsonString")
 
                 writer.write(jsonString)
                 writer.newLine()

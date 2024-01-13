@@ -2,28 +2,25 @@ package com.example.app_iliyan.dataclass
 
 import kotlinx.serialization.Serializable
 
-@Serializable sealed class EventData
-
-@Serializable data class Event<T : EventData>(val eventType: String, val data: T)
-
-@Serializable data class IdData(val id: String) : EventData()
+@Serializable data class Event(val eventType: String, val data: EventData)
 
 @Serializable
-data class CreateFriendRequestData(
-  val emailSender: String,
-  val status: String,
-  val emailRecipient: String
-) : EventData()
+data class EventData(
+  val id: String? = null,
+  val emailSender: String? = null,
+  val status: String? = null,
+  val emailRecipient: String? = null,
+  val groupchatid: String? = null,
+  val groupchat: GroupChatData? = null,
+  val user: UserData? = null,
+  val message: MessageData? = null,
+  val friendrequest: FriendRequestData? = null
+)
+
+@Serializable data class GroupChatData(val id: Int, val name: String, val users: List<UserData>)
 
 @Serializable
-data class GroupChatData(val id: Int, val name: String, val users: List<UserData>) : EventData()
-
-@Serializable
-data class CreateMessageData(val message: MessageData, val groupchatid: String) : EventData()
-
-@Serializable
-data class UserData(val id: String, val username: String, val email: String, val password: String) :
-  EventData()
+data class UserData(val id: String, val username: String, val email: String, val password: String)
 
 @Serializable
 data class MessageData(
@@ -32,7 +29,7 @@ data class MessageData(
   val attachmentURL: String,
   val timestamp: String,
   val sender: UserData
-) : EventData()
+)
 
 @Serializable
 data class FriendRequestData(
@@ -40,4 +37,4 @@ data class FriendRequestData(
   val status: String,
   val recipient: UserData,
   val sender: UserData
-) : EventData()
+)
