@@ -34,10 +34,10 @@ fun HomeSearchField(
   friendrequestList: List<FriendRequest>,
   userOptions: UserOptions
 ) {
-  // Filter the group chat list / Friends  by the search text
+  // Filter the group chat / friends  by the search text
   val filteredGroupChat =
     groupchatList.filter { it.name.contains(userOptions.searchText, ignoreCase = true) }
-  val filteredContactChat: List<FriendRequest> =
+  val filteredFriendRequest: List<FriendRequest> =
     friendrequestList.filter { it.status.contains(userOptions.searchText, ignoreCase = true) }
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
@@ -78,7 +78,7 @@ fun HomeSearchField(
           GroupChatCardList(items = filteredGroupChat)
         }
         "Friends" -> {
-          FriendRequestCardList(items = filteredContactChat)
+          FriendRequestCardList(items = filteredFriendRequest)
         }
         "Settings" -> {
           SettingsOptions()

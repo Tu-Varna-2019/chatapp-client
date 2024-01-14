@@ -75,7 +75,9 @@ fun MessageBubble(message: Message) {
           Text(text = message.content, fontSize = 15.sp)
 
           Spacer(modifier = Modifier.height(4.dp))
-          AttachmentImage(encodedAttachment = message.attachmentURL)
+
+          if (message.attachmentURL != "")
+            AttachmentImage(encodedAttachment = message.attachmentURL)
 
           Spacer(modifier = Modifier.height(4.dp))
           Text(

@@ -16,6 +16,7 @@ import com.example.app_iliyan.model.User
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
+import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -32,7 +33,7 @@ abstract class SharedRepo {
       message.id,
       message.content,
       message.attachmentURL,
-      message.timestamp,
+      Timestamp.valueOf(message.timestamp),
       convertToUserData(message.sender)
     )
   }
@@ -94,11 +95,11 @@ abstract class SharedRepo {
 
     return sendClientData(
       event,
-      DataRequest(message = convertToMessageData(message), groupchatid = groupChatID)
+      DataRequest(message = convertToMessageData(message), id = groupChatID)
     )
   }
 
-  suspend fun SendID(event: String, id: Int): ServerResponse {
+  suspend fun sendIDData(event: String, id: Int): ServerResponse {
 
     return sendClientData(event, DataRequest(id = id.toString()))
   }

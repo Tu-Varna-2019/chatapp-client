@@ -1,6 +1,7 @@
 package com.example.app_iliyan.dataclass
 
 import kotlinx.serialization.Serializable
+import java.sql.Timestamp
 
 @Serializable
 data class ServerRequest(
@@ -31,7 +32,7 @@ data class MessageData(
   val id: Int,
   val content: String,
   val attachmentURL: String,
-  val timestamp: String,
+  @Serializable(with = TimestampSerializer::class) val timestamp: Timestamp,
   val sender: UserData
 )
 

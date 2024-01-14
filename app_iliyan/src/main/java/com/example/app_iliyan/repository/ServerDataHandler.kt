@@ -14,6 +14,9 @@ import com.example.app_iliyan.model.LocalData
 import com.example.app_iliyan.model.Message
 import com.example.app_iliyan.model.User
 import kotlinx.serialization.json.Json
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class ServerDataHandler {
   companion object {
@@ -47,7 +50,7 @@ class ServerDataHandler {
       val users =
         groupChatData.users.map { userData ->
           User(
-            id = userData.id.toInt(),
+            id = userData.id,
             username = userData.username,
             email = userData.email,
             password = userData.password
@@ -60,7 +63,7 @@ class ServerDataHandler {
 
       val recipient =
         User(
-          id = friendrequestData.recipient.id.toInt(),
+          id = friendrequestData.recipient.id,
           username = friendrequestData.recipient.username,
           email = friendrequestData.recipient.email,
           password = friendrequestData.recipient.password
@@ -78,7 +81,7 @@ class ServerDataHandler {
 
       val sender =
         User(
-          id = messageData.sender.id.toInt(),
+          id = messageData.sender.id,
           username = messageData.sender.username,
           email = messageData.sender.email,
           password = messageData.sender.password
@@ -88,7 +91,11 @@ class ServerDataHandler {
         id = messageData.id,
         content = messageData.content,
         attachmentURL = messageData.attachmentURL,
-        timestamp = messageData.timestamp,
+        timestamp =
+          Instant.ofEpochMilli(messageData.timestamp.time)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime()
+            .format(DateTimeFormatter.ofPattern("MM-dd HH:mm")),
         sender = sender
       )
     }
