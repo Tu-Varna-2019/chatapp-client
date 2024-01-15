@@ -1,6 +1,8 @@
 package com.example.app_iliyan.view.components.home
 
+import android.widget.PopupMenu
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,10 +14,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,11 +53,13 @@ fun FriendRequestCardList(items: List<FriendRequest>) {
 
 @Composable
 fun FriendRequestCard(item: FriendRequest) {
-  var statusColor: Color
-  var imageStatus: Int
+  val statusColor: Color
+  val imageStatus: Int
+  val showMessageMenu = remember { mutableStateOf(false) }
+  val clickedFQ = remember { mutableStateOf(item) }
 
   if (item.status == "Pending") {
-    statusColor = Color.Black
+    statusColor = Color.Yellow
     imageStatus = R.drawable.pending
   } else if (item.status == "Accepted") {
     statusColor = Color.Green
@@ -61,8 +73,8 @@ fun FriendRequestCard(item: FriendRequest) {
     Card(
       modifier =
         Modifier.padding(0.dp)
-          // .width(250.dp)
-          // .clickable {  }
+          .width(250.dp)
+          .clickable { showMessageMenu.value = true }
           .fillMaxSize()
           .padding(8.dp),
       elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
@@ -82,13 +94,51 @@ fun FriendRequestCard(item: FriendRequest) {
         Spacer(modifier = Modifier.width(16.dp))
         Column {
           Text(
-            text = item.status,
-            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, color = statusColor)
+            text = item.recipient.email,
+            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
           )
           Spacer(modifier = Modifier.height(8.dp))
 
-          Text("Recipient: " + item.recipient.email, style = TextStyle(fontSize = 14.sp))
+          Text(item.status, color = statusColor, style = TextStyle(fontSize = 14.sp))
         }
+        if (showMessageMenu.value) {
+          FriendRequestDropDownMenu(
+            PopupMenu.OnDismissListener { showMessageMenu.value = false },
+            clickedFQ.value
+          )
+        }
+      }
+    }
+  }
+}
+
+@Composable
+fun FriendRequestDropDownMenu(
+  OnDismissListener: PopupMenu.OnDismissListener,
+  clickedMessage: FriendRequest
+) {
+
+  // val messageViewModel: MessageViewModel = viewModel()
+
+  Box(contentAlignment = Alignment.Center) {
+    MaterialTheme(
+      colorScheme =
+        MaterialTheme.colorScheme.copy(surface = Color(red = 234, green = 221, blue = 255))
+    ) {
+      DropdownMenu(
+        expanded = true,
+        onDismissRequest = { OnDismissListener.onDismiss(null) },
+        modifier = Modifier.align(Alignment.TopEnd)
+      ) {
+        DropdownMenuItem(
+          onClick = {
+            //            CoroutineScope(Dispatchers.Main).launch {
+            //              messageViewModel.handleDeleteMessageClick(clickedMessage)
+            //            }
+          },
+          text = { Text("Delete") },
+          leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) }
+        )
       }
     }
   }
