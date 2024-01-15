@@ -16,6 +16,7 @@ import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.navigation.HomeNavigationHandler
 import com.example.app_iliyan.view.components.dialog_box.SnackbarManager.ScaffoldSnackbar
 import com.example.app_iliyan.view.components.home.HomeNavigationBottomMenu
+import com.example.app_iliyan.view_model.FriendRequestViewModel
 import com.example.app_iliyan.view_model.HomeViewModel
 
 class HomeActivity : ComponentActivity() {
@@ -28,13 +29,14 @@ class HomeActivity : ComponentActivity() {
     val homeNavigationHandler = HomeNavigationHandler()
     val userOptionsObj = UserOptions("", "Chat")
     val homeViewModel: HomeViewModel by viewModels()
+    val friendRequestViewModel: FriendRequestViewModel by viewModels()
 
     setContent {
       val groupchatListState = homeViewModel.groupChats.collectAsState()
-      homeViewModel.fetchGroupChatsFriendRequests()
+      homeViewModel.fetchGroupChats()
 
-      val friendrequestListState = homeViewModel.friendRequests.collectAsState()
-      homeViewModel.fetchGroupChatsFriendRequests()
+      val friendrequestListState = friendRequestViewModel.friendRequests.collectAsState()
+      friendRequestViewModel.fetchFriendRequests()
 
       ScaffoldSnackbar {
         HomeLayout(

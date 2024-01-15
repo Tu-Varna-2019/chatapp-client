@@ -1,6 +1,7 @@
 package com.example.app_iliyan.repository
 
 import android.util.Log
+import com.example.app_iliyan.dataclass.FilterRequest
 import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.FriendRequest
@@ -10,10 +11,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class FriendRequestRepo : SharedRepo() {
-  suspend fun getAllFriendRequestsAuthUser(): List<FriendRequest> {
+  suspend fun getAllFriendRequests(filterRequest: FilterRequest? = null): List<FriendRequest> {
     try {
       val server: ServerResponse =
-        sendUserData("GetFriendRequests", LocalData.getAuthenticatedUser()!!)
+        sendUserData(
+          event = "GetFriendRequests",
+          user = LocalData.getAuthenticatedUser()!!,
+          filterRequest = filterRequest
+        )
 
       if (server.status == "Success" && server.data.friendrequests != null) {
 
@@ -28,7 +33,7 @@ class FriendRequestRepo : SharedRepo() {
         return emptyList()
       }
     } catch (e: Exception) {
-      Utils.logger.error("getAllGroupChatsAuthUser: {}", e.message.toString())
+      Utils.logger.error("getAllGroupChats: {}", e.message.toString())
     }
     return emptyList()
   }
@@ -59,5 +64,21 @@ class FriendRequestRepo : SharedRepo() {
         return@withContext false
       }
     }
+  }
+
+  suspend fun deleteFriendRequest(friendRequestID: Int): Boolean {
+    try {
+      val server: ServerResponse = sendIDData("DeleteFriendRequest", friendRequestID)
+
+      if (server.status == "Success") {
+        return true
+      } else {
+        Utils.logger.warn("deleteFriendRequest: Not Friend request deleted")
+        return false
+      }
+    } catch (e: Exception) {
+      Utils.logger.error("deleteFriendRequest: {}", e.message.toString())
+    }
+    return false
   }
 }

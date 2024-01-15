@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
@@ -41,11 +42,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.app_iliyan.R
+import com.example.app_iliyan.dataclass.FilterRequest
+import com.example.app_iliyan.dataclass.FriendRequestData
+import com.example.app_iliyan.dataclass.UserData
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.Message
-import com.example.app_iliyan.view.components.home.FriendRequestCardList
 import com.example.app_iliyan.view.components.isChatLoadedIndicator
-import com.example.app_iliyan.view_model.HomeViewModel
+import com.example.app_iliyan.view_model.FriendRequestViewModel
 import com.example.app_iliyan.view_model.MessageViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -96,7 +99,7 @@ fun SearchFieldMessages(groupChat: GroupChat) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SendMessage(groupChat: GroupChat) {
-  val showFriendsList = remember { mutableStateOf(false) }
+  val showUsersList = remember { mutableStateOf(false) }
   val typedMessage = remember { mutableStateOf("") }
   val messageViewModel: MessageViewModel = viewModel()
   val isLoading = remember { mutableStateOf(false) }
@@ -119,7 +122,7 @@ fun SendMessage(groupChat: GroupChat) {
     }
 
     Button(
-      onClick = { showFriendsList.value = !showFriendsList.value },
+      onClick = { showUsersList.value = !showUsersList.value },
       modifier = Modifier.align(Alignment.TopEnd).padding(16.dp),
       colors =
         ButtonDefaults.buttonColors(contentColor = Color.Black, containerColor = Color.Transparent)
@@ -178,17 +181,21 @@ fun SendMessage(groupChat: GroupChat) {
         Icon(imageVector = Icons.Default.Send, contentDescription = "", tint = Color.Black)
       }
     }
-    if (showFriendsList.value) {
-      FriendRequestToolbar()
+    if (showUsersList.value) {
+      UsersToolbar()
     }
   }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun FriendRequestToolbar() {
-  val homeViewModel: HomeViewModel = viewModel()
-  val friendrequestListState = homeViewModel.friendRequests.collectAsState()
-  homeViewModel.fetchGroupChatsFriendRequests()
+fun UsersToolbar() {
+  val showAcceptedFriendRequests = remember { mutableStateOf(false) }
+
+  val friendRequestViewModel: FriendRequestViewModel = viewModel()
+
+  val groupchatViewModel: MessageViewModel = viewModel()
+  val groupChatListState = groupchatViewModel.selectedGroupChat.collectAsState()
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     Surface(
@@ -203,7 +210,7 @@ fun FriendRequestToolbar() {
         horizontalAlignment = Alignment.CenterHorizontally
       ) {
         Text(
-          text = "Members",
+          text = if (!showAcceptedFriendRequests.value) "Group members" else "Your friends",
           color = Color.Black,
           textAlign = TextAlign.Center,
           fontSize = 20.sp,
@@ -211,7 +218,47 @@ fun FriendRequestToolbar() {
           modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        FriendRequestCardList(items = friendrequestListState.value)
+        if (!showAcceptedFriendRequests.value) {
+          GroupChatUsersCardList(
+            items = groupChatListState.value.users,
+            groupChatId = groupChatListState.value.id
+          )
+        } else {
+          val friendRequestResult =
+            FilterRequest(
+              friendrequest =
+                FriendRequestData(
+                  id = 0,
+                  status = "Accepted",
+                  recipient = UserData(id = 0, username = "", email = "", password = ""),
+                  sender = UserData(id = 0, username = "", email = "", password = "")
+                )
+            )
+
+          friendRequestViewModel.fetchFriendRequests(friendRequestResult)
+          val friendRequestsListState = friendRequestViewModel.friendRequests.collectAsState()
+          FriendRequestCardList(friendRequestsListState.value, "AddUserToGroup")
+        }
+        // Add user button
+        Button(
+          onClick = { showAcceptedFriendRequests.value = !showAcceptedFriendRequests.value },
+          colors =
+            ButtonDefaults.buttonColors(
+              contentColor = Color.Black,
+              containerColor = Color.Transparent
+            )
+        ) {
+          Icon(
+            imageVector =
+              if (!showAcceptedFriendRequests.value) Icons.Default.AddCircle
+              else Icons.Default.ArrowBack,
+            contentDescription = ""
+          )
+          Text(
+            text = if (!showAcceptedFriendRequests.value) "Add User" else "Go back",
+            color = Color.Black
+          )
+        }
       }
     }
   }

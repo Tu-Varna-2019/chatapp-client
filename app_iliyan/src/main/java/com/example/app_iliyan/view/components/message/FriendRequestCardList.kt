@@ -1,4 +1,4 @@
-package com.example.app_iliyan.view.components.home
+package com.example.app_iliyan.view.components.message
 
 import android.widget.PopupMenu
 import androidx.compose.foundation.Image
@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,12 +35,23 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.app_iliyan.R
 import com.example.app_iliyan.model.FriendRequest
+import com.example.app_iliyan.view.components.dialog_box.SnackbarManager
 import com.example.app_iliyan.view.components.isChatLoadedIndicator
+import com.example.app_iliyan.view_model.FriendRequestViewModel
+import com.example.app_iliyan.view_model.UserViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun FriendRequestCardList(items: List<FriendRequest>) {
+fun FriendRequestCardList(
+  items: List<FriendRequest>,
+  dropDownMenuMode: String,
+  groupchatId: Int = 0
+) {
   if (items.isEmpty()) {
     isChatLoadedIndicator(
       messageContent = "You don't have any invited friends yet!",
@@ -47,12 +59,12 @@ fun FriendRequestCardList(items: List<FriendRequest>) {
       image = R.drawable.no_contact
     )
   } else {
-    LazyColumn { items(items) { item -> FriendRequestCard(item) } }
+    LazyColumn { items(items) { item -> FriendRequestCard(item, dropDownMenuMode, groupchatId) } }
   }
 }
 
 @Composable
-fun FriendRequestCard(item: FriendRequest) {
+fun FriendRequestCard(item: FriendRequest, dropDownMenuMode: String, groupchatId: Int = 0) {
   val statusColor: Color
   val imageStatus: Int
   val showMessageMenu = remember { mutableStateOf(false) }
@@ -102,10 +114,22 @@ fun FriendRequestCard(item: FriendRequest) {
           Text(item.status, color = statusColor, style = TextStyle(fontSize = 14.sp))
         }
         if (showMessageMenu.value) {
-          FriendRequestDropDownMenu(
-            PopupMenu.OnDismissListener { showMessageMenu.value = false },
-            clickedFQ.value
-          )
+          when (dropDownMenuMode) {
+            "AddUserToGroup" -> {
+              FRAddUserToGroupDropDownMenu(
+                PopupMenu.OnDismissListener { showMessageMenu.value = false },
+                clickedFQ.value,
+                groupchatId
+              )
+            }
+            "RemoveMistakenlySentBySender" -> {
+              FRRemoveMistakenlySentBySenderDropDownMenu(
+                PopupMenu.OnDismissListener { showMessageMenu.value = false },
+                clickedFQ.value
+              )
+            }
+            else -> ""
+          }
         }
       }
     }
@@ -113,12 +137,13 @@ fun FriendRequestCard(item: FriendRequest) {
 }
 
 @Composable
-fun FriendRequestDropDownMenu(
+fun FRAddUserToGroupDropDownMenu(
   OnDismissListener: PopupMenu.OnDismissListener,
-  clickedMessage: FriendRequest
+  clickedMessage: FriendRequest,
+  groupchatId: Int
 ) {
 
-  // val messageViewModel: MessageViewModel = viewModel()
+  val userViewModel: UserViewModel = viewModel()
 
   Box(contentAlignment = Alignment.Center) {
     MaterialTheme(
@@ -132,9 +157,43 @@ fun FriendRequestDropDownMenu(
       ) {
         DropdownMenuItem(
           onClick = {
-            //            CoroutineScope(Dispatchers.Main).launch {
-            //              messageViewModel.handleDeleteMessageClick(clickedMessage)
-            //            }
+            CoroutineScope(Dispatchers.Main).launch {
+              val message: String =
+                userViewModel.handleAddUserFromGroupChatClick(clickedMessage.recipient, groupchatId)
+              SnackbarManager.showSnackbar(message)
+            }
+          },
+          text = { Text("Add " + clickedMessage.recipient.username) },
+          leadingIcon = { Icon(Icons.Filled.Add, contentDescription = null) }
+        )
+      }
+    }
+  }
+}
+
+@Composable
+fun FRRemoveMistakenlySentBySenderDropDownMenu(
+  OnDismissListener: PopupMenu.OnDismissListener,
+  clickedMessage: FriendRequest
+) {
+
+  val friendRequestViewModel: FriendRequestViewModel = viewModel()
+
+  Box(contentAlignment = Alignment.Center) {
+    MaterialTheme(
+      colorScheme =
+        MaterialTheme.colorScheme.copy(surface = Color(red = 234, green = 221, blue = 255))
+    ) {
+      DropdownMenu(
+        expanded = true,
+        onDismissRequest = { OnDismissListener.onDismiss(null) },
+        modifier = Modifier.align(Alignment.TopEnd)
+      ) {
+        DropdownMenuItem(
+          onClick = {
+            CoroutineScope(Dispatchers.Main).launch {
+              friendRequestViewModel.handleDeleteFriendRequestClick(clickedMessage)
+            }
           },
           text = { Text("Delete") },
           leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) }

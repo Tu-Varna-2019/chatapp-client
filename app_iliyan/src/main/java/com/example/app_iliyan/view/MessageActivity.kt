@@ -15,6 +15,7 @@ import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.Message
 import com.example.app_iliyan.model.User
 import com.example.app_iliyan.navigation.MessageNavigationHandler
+import com.example.app_iliyan.view.components.dialog_box.SnackbarManager
 import com.example.app_iliyan.view.components.message.SearchFieldMessages
 import com.example.app_iliyan.view.components.message.SendMessage
 import com.example.app_iliyan.view_model.MessageViewModel
@@ -46,9 +47,11 @@ class MessageActivity : ComponentActivity() {
       messageViewModel.fetchMessagesByGroupChat(groupChat)
     }
     setContent {
-      val groupChatState = messageViewModel.selectedGroupChat.collectAsState()
+      SnackbarManager.ScaffoldSnackbar {
+        val groupChatState = messageViewModel.selectedGroupChat.collectAsState()
 
-      MessageLayout(groupChat = groupChatState.value)
+        MessageLayout(groupChat = groupChatState.value)
+      }
     }
 
     // Back to home event

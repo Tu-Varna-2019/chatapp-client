@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app_iliyan.helpers.Utils
-import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.LocalData
 import com.example.app_iliyan.model.state.UserOptions
@@ -24,20 +23,13 @@ class HomeViewModel() : ViewModel(), ChatInterface {
   private val _groupChats = MutableStateFlow<List<GroupChat>>(emptyList())
   val groupChats: StateFlow<List<GroupChat>> = _groupChats
 
-  private val _friendRequests = MutableStateFlow<List<FriendRequest>>(emptyList())
-  val friendRequests: StateFlow<List<FriendRequest>> = _friendRequests
-
-  fun fetchGroupChatsFriendRequests() {
+  fun fetchGroupChats() {
     viewModelScope.launch(Dispatchers.Main) {
       while (isActive) {
         try {
           // Group chat
-          val fetchGroupChat = chatRepo.groupChatRepo.getAllGroupChatsAuthUser()
-
+          val fetchGroupChat = chatRepo.groupChatRepo.getAllGroupChats()
           _groupChats.value = fetchGroupChat
-          // Friend request
-          val fetchFriendRequest = chatRepo.friendRequestRepo.getAllFriendRequestsAuthUser()
-          _friendRequests.value = fetchFriendRequest
         } catch (e: Exception) {
           Utils.logger.error("HomeViewModel", "Error fetching group chats/friend requests!", e)
         }

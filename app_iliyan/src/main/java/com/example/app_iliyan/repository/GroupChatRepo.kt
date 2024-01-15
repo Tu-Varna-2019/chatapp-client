@@ -5,11 +5,12 @@ import com.example.app_iliyan.dataclass.ServerResponse
 import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.LocalData
+import com.example.app_iliyan.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GroupChatRepo : SharedRepo() {
-  suspend fun getAllGroupChatsAuthUser(): List<GroupChat> {
+  suspend fun getAllGroupChats(): List<GroupChat> {
     try {
       val server: ServerResponse = sendUserData("GetGroupChats", LocalData.getAuthenticatedUser()!!)
 
@@ -22,11 +23,11 @@ class GroupChatRepo : SharedRepo() {
 
         return groupchatList
       } else {
-        Utils.logger.warn("getAllGroupChatsAuthUser: Not Chat Groups Found")
+        Utils.logger.warn("getAllGroupChats: Not Chat Groups Found")
         return emptyList()
       }
     } catch (e: Exception) {
-      Utils.logger.error("getAllGroupChatsAuthUser: {}", e.message.toString())
+      Utils.logger.error("getAllGroupChats: {}", e.message.toString())
     }
     return emptyList()
   }
@@ -56,5 +57,44 @@ class GroupChatRepo : SharedRepo() {
         return@withContext false
       }
     }
+  }
+
+  suspend fun removeUserFromGroupChat(
+    user: User,
+    groupChatID: Int,
+  ): String {
+    try {
+      val server: ServerResponse =
+        sendUserData("RemoveUserFromGroupChat", user, groupChatID.toString())
+
+      if (server.status == "Success") {
+        return server.message
+      } else {
+        Utils.logger.warn("removeUserFromGroupChat: Not User removed from group chat")
+        return "Error, please try again later"
+      }
+    } catch (e: Exception) {
+      Utils.logger.error("removeUserFromGroupChat: {}", e.message.toString())
+    }
+    return "Error, please try again later"
+  }
+
+  suspend fun addUserFromGroupChat(
+    user: User,
+    groupChatID: Int,
+  ): String {
+    try {
+      val server: ServerResponse = sendUserData("AddUserToGroupChat", user, groupChatID.toString())
+
+      if (server.status == "Success") {
+        return server.message
+      } else {
+        Utils.logger.warn("AddUserToGroupChat: Not User added to group chat")
+        return "Error, please try again later"
+      }
+    } catch (e: Exception) {
+      Utils.logger.error("AddUserToGroupChat: {}", e.message.toString())
+    }
+    return "Error, please try again later"
   }
 }

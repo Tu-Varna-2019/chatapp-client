@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.state.UserOptions
+import com.example.app_iliyan.view.components.message.FriendRequestCardList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +79,7 @@ fun HomeSearchField(
           GroupChatCardList(items = filteredGroupChat)
         }
         "Friends" -> {
-          FriendRequestCardList(items = filteredFriendRequest)
+          FriendRequestCardList(items = filteredFriendRequest, "")
         }
         "Settings" -> {
           SettingsOptions()

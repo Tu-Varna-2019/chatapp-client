@@ -64,12 +64,17 @@ abstract class SharedRepo {
     return server
   }
 
-  suspend fun sendUserData(event: String, user: User): ServerResponse {
+  suspend fun sendUserData(
+    event: String,
+    user: User,
+    id: String = "",
+    filterRequest: FilterRequest? = null
+  ): ServerResponse {
 
     return sendClientData(
       event,
-      data = DataRequest(user = convertToUserData(user)),
-      // filter = FilterRequest(friendrequest = filterFriendRequest)
+      data = DataRequest(id = id, user = convertToUserData(user)),
+      filter = filterRequest
     )
   }
 
