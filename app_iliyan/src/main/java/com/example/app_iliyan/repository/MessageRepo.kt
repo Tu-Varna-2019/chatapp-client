@@ -8,7 +8,7 @@ import com.example.app_iliyan.model.Message
 
 class MessageRepo : SharedRepo() {
   suspend fun getAllMessages(groupChatDataArg: GroupChatData): GroupChat {
-    // Convert the GroupChatData to a GroupChat model
+
     val groupChatArg = ServerDataHandler.convertGroupChatDataToModel(groupChatDataArg)
     try {
       val server: ServerResponse = sendIDData("GetMessages", groupChatDataArg.id)

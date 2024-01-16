@@ -59,6 +59,21 @@ class GroupChatRepo : SharedRepo() {
     }
   }
 
+  suspend fun handleDeleteGroupChat(groupchatid: Int): String {
+    try {
+      val server: ServerResponse =
+        sendGroupChat(
+          "DeleteGroupChat",
+          GroupChat(id = groupchatid, name = "", users = emptyList())
+        )
+
+      return server.message
+    } catch (e: Exception) {
+      Utils.logger.error("removeUserFromGroupChat: {}", e.message.toString())
+    }
+    return "Error, please try again later"
+  }
+
   suspend fun updateUserFromGroupChat(
     event: String,
     user: User,

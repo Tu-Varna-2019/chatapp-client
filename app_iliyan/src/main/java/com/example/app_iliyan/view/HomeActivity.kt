@@ -14,7 +14,7 @@ import com.example.app_iliyan.model.LocalData
 import com.example.app_iliyan.model.User
 import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.navigation.HomeNavigationHandler
-import com.example.app_iliyan.view.components.dialog_box.SnackbarManager.ScaffoldSnackbar
+import com.example.app_iliyan.view.components.dialog_box.SnackbarManager
 import com.example.app_iliyan.view.components.home.HomeNavigationBottomMenu
 import com.example.app_iliyan.view_model.FriendRequestViewModel
 import com.example.app_iliyan.view_model.HomeViewModel
@@ -38,7 +38,7 @@ class HomeActivity : ComponentActivity() {
       val friendrequestListState = friendRequestViewModel.friendRequests.collectAsState()
       friendRequestViewModel.fetchFriendRequests()
 
-      ScaffoldSnackbar {
+      SnackbarManager.ScaffoldSnackbar {
         HomeLayout(
           groupchatList = groupchatListState.value,
           friendrequestList = friendrequestListState.value,

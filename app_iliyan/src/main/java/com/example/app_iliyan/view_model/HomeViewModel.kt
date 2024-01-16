@@ -50,6 +50,12 @@ class HomeViewModel() : ViewModel(), ChatInterface {
     gotoMessageEvent.value = groupChat
   }
 
+  suspend fun handleDeleteGroupChatClick(groupchatid: Int): String {
+    val deleteGroupChatMessage = chatRepo.groupChatRepo.handleDeleteGroupChat(groupchatid)
+
+    return deleteGroupChatMessage
+  }
+
   suspend fun handleDeleteAccountClick(userEnteredPassword: String, onResult: (String) -> Unit) {
     val isDeleteAccountSuccess =
       chatRepo.userRepo.handleDeleteAuthUser(userEnteredPassword, onResult)
