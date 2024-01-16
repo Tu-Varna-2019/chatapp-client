@@ -237,7 +237,11 @@ fun UsersToolbar() {
 
           friendRequestViewModel.fetchFriendRequests(friendRequestResult)
           val friendRequestsListState = friendRequestViewModel.friendRequests.collectAsState()
-          FriendRequestCardList(friendRequestsListState.value, "AddUserToGroup")
+          FriendRequestCardList(
+            friendRequestsListState.value,
+            "AddUserToGroup",
+            groupChatListState.value.id
+          )
         }
         // Add user button
         Button(

@@ -13,7 +13,11 @@ class UserViewModel : ViewModel(), ChatInterface {
     groupChatId: Int
   ): String {
     val userRemovedFromGroupChatMessage =
-      chatRepo.groupChatRepo.removeUserFromGroupChat(removedUserFromGroupChat, groupChatId)
+      chatRepo.groupChatRepo.updateUserFromGroupChat(
+        "RemoveUserFromGroupChat",
+        removedUserFromGroupChat,
+        groupChatId
+      )
 
     return userRemovedFromGroupChatMessage
   }
@@ -23,7 +27,11 @@ class UserViewModel : ViewModel(), ChatInterface {
     groupChatId: Int
   ): String {
     val userAddedToGroupChatMessage =
-      chatRepo.groupChatRepo.addUserFromGroupChat(addedUserToGroupChat, groupChatId)
+      chatRepo.groupChatRepo.updateUserFromGroupChat(
+        "AddUserToGroupChat",
+        addedUserToGroupChat,
+        groupChatId
+      )
 
     return userAddedToGroupChatMessage
   }

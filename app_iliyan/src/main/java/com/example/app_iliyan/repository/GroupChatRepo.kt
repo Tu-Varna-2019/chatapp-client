@@ -59,41 +59,17 @@ class GroupChatRepo : SharedRepo() {
     }
   }
 
-  suspend fun removeUserFromGroupChat(
+  suspend fun updateUserFromGroupChat(
+    event: String,
     user: User,
     groupChatID: Int,
   ): String {
     try {
-      val server: ServerResponse =
-        sendUserData("RemoveUserFromGroupChat", user, groupChatID.toString())
+      val server: ServerResponse = sendUserData(event, user, groupChatID.toString())
 
-      if (server.status == "Success") {
-        return server.message
-      } else {
-        Utils.logger.warn("removeUserFromGroupChat: Not User removed from group chat")
-        return "Error, please try again later"
-      }
+      return server.message
     } catch (e: Exception) {
       Utils.logger.error("removeUserFromGroupChat: {}", e.message.toString())
-    }
-    return "Error, please try again later"
-  }
-
-  suspend fun addUserFromGroupChat(
-    user: User,
-    groupChatID: Int,
-  ): String {
-    try {
-      val server: ServerResponse = sendUserData("AddUserToGroupChat", user, groupChatID.toString())
-
-      if (server.status == "Success") {
-        return server.message
-      } else {
-        Utils.logger.warn("AddUserToGroupChat: Not User added to group chat")
-        return "Error, please try again later"
-      }
-    } catch (e: Exception) {
-      Utils.logger.error("AddUserToGroupChat: {}", e.message.toString())
     }
     return "Error, please try again later"
   }

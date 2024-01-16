@@ -124,8 +124,6 @@ class UserRepo : SharedRepo() {
   ): Boolean {
     return withContext(Dispatchers.Main) {
       try {
-        // Sent userdata is in the format User (old-email, new-email, empty password)
-        // Reason: avoid creating new dataclass for this purpose
         val user =
           User(
             0,
@@ -163,8 +161,6 @@ class UserRepo : SharedRepo() {
   ): Boolean {
     return withContext(Dispatchers.Main) {
       try {
-        // Sent userdata is in the format User (new-password, new-email, old-password)
-        // Reason: avoid creating new dataclass for this purpose
         val user =
           User(
             0,
