@@ -12,13 +12,15 @@ class LoginRegisterViewModel : ViewModel(), ChatInterface {
   val registerEvent = MutableLiveData<Boolean>()
 
   suspend fun handleLoginClick(user: User, onResult: (String) -> Unit) {
-    val isLoginSuccess = chatRepo.userRepo.handleLoginUserClick(user, onResult)
+    val isLoginSuccess = chatRepo.userRepo.handleModifyConfirmAuthUser("Login", user, onResult)
 
-    if (isLoginSuccess) loginEvent.value = true
+    if (isLoginSuccess) {
+      loginEvent.value = true
+    }
   }
 
   suspend fun handleRegisterClick(user: User, onResult: (String) -> Unit) {
-    val isRegisterSuccess = chatRepo.userRepo.handleSignUpUserClick(user, onResult)
+    val isRegisterSuccess = chatRepo.userRepo.handleModifyConfirmAuthUser("SignUp", user, onResult)
 
     if (isRegisterSuccess) registerEvent.value = true
   }

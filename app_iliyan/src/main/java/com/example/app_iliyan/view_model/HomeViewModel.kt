@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.app_iliyan.helpers.Utils
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.LocalData
+import com.example.app_iliyan.model.User
 import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.repository.ChatInterface
 import com.example.app_iliyan.repository.ChatRepo
@@ -57,18 +58,54 @@ class HomeViewModel() : ViewModel(), ChatInterface {
   }
 
   suspend fun handleDeleteAccountClick(userEnteredPassword: String, onResult: (String) -> Unit) {
+    val user =
+      User(
+        0,
+        LocalData.getAuthenticatedUser()?.username ?: "",
+        LocalData.getAuthenticatedUser()?.email ?: "",
+        userEnteredPassword
+      )
     val isDeleteAccountSuccess =
-      chatRepo.userRepo.handleDeleteAuthUser(userEnteredPassword, onResult)
+      chatRepo.userRepo.handleModifyConfirmAuthUser("DeleteAccount", user, onResult)
 
     if (isDeleteAccountSuccess) logoutEvent.value = true
   }
 
   suspend fun handleRenameUsernameClick(userEnteredUsername: String, onResult: (String) -> Unit) {
-    chatRepo.userRepo.handleRenameUsernameAuthUser(userEnteredUsername, onResult)
+    val user =
+      User(
+        0,
+        userEnteredUsername,
+        LocalData.getAuthenticatedUser()?.email ?: "",
+        LocalData.getAuthenticatedUser()?.password ?: ""
+      )
+    val isUsernameRenamed =
+      chatRepo.userRepo.handleModifyConfirmAuthUser("RenameUsername", user, onResult)
+
+    if (isUsernameRenamed)
+      LocalData.setAuthenticatedUser(
+        userEnteredUsername,
+        LocalData.getAuthenticatedUser()?.email ?: "",
+      )
   }
 
   suspend fun handleRenameEmailClick(userEnteredEmail: String, onResult: (String) -> Unit) {
-    chatRepo.userRepo.handleRenameEmailAuthUser(userEnteredEmail, onResult)
+    val user =
+      User(
+        0,
+        LocalData.getAuthenticatedUser()?.email ?: "",
+        userEnteredEmail,
+        LocalData.getAuthenticatedUser()?.password ?: ""
+      )
+
+    val isEmailRenamed =
+      chatRepo.userRepo.handleModifyConfirmAuthUser("RenameEmail", user, onResult)
+
+    if (isEmailRenamed)
+      LocalData.setAuthenticatedUser(
+        LocalData.getAuthenticatedUser()?.username ?: "",
+        userEnteredEmail,
+      )
   }
 
   suspend fun handleChangePasswordClick(
@@ -76,8 +113,10 @@ class HomeViewModel() : ViewModel(), ChatInterface {
     newPassword: String,
     onResult: (String) -> Unit
   ) {
+    val user = User(0, oldPassword, LocalData.getAuthenticatedUser()?.email ?: "", newPassword)
+
     val isPasswordChanged =
-      chatRepo.userRepo.handleChangePasswordAuthUser(oldPassword, newPassword, onResult)
+      chatRepo.userRepo.handleModifyConfirmAuthUser("ChangePassword", user, onResult)
 
     if (isPasswordChanged) logoutEvent.value = true
   }
