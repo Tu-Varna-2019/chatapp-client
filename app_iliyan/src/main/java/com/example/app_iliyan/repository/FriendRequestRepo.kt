@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 
 class FriendRequestRepo : SharedRepo() {
   suspend fun getAllFriendRequests(filterRequest: FilterRequest? = null): List<FriendRequest> {
+
     try {
       val server: ServerResponse =
         sendUserData(
@@ -48,7 +49,7 @@ class FriendRequestRepo : SharedRepo() {
             sender = LocalData.getAuthenticatedUser()!!,
             recipient = User(0, username = "", email = recipientEmail, password = "")
           )
-        val server: ServerResponse = sendAddFriendRequest("SendFriendRequest", friendRequest)
+        val server: ServerResponse = sendFriendRequest("SendFriendRequest", friendRequest)
 
         if (server.status == "Success") {
 
@@ -66,19 +67,14 @@ class FriendRequestRepo : SharedRepo() {
     }
   }
 
-  suspend fun deleteFriendRequest(friendRequestID: Int): Boolean {
+  suspend fun handleFriendRequestOperation(event: String, friendRequest: FriendRequest): String {
     try {
-      val server: ServerResponse = sendIDData("DeleteFriendRequest", friendRequestID)
+      val server: ServerResponse = sendFriendRequest(event, friendRequest)
 
-      if (server.status == "Success") {
-        return true
-      } else {
-        Utils.logger.warn("deleteFriendRequest: Not Friend request deleted")
-        return false
-      }
+      return server.message
     } catch (e: Exception) {
-      Utils.logger.error("deleteFriendRequest: {}", e.message.toString())
+      Utils.logger.error("friendRequestOperation: {}", e.message.toString())
     }
-    return false
+    return ""
   }
 }

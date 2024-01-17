@@ -12,10 +12,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,23 +28,29 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.app_iliyan.dataclass.FilterRequest
+import com.example.app_iliyan.dataclass.FriendRequestData
+import com.example.app_iliyan.dataclass.UserData
 import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.view.components.message.FriendRequestCardList
+import com.example.app_iliyan.view_model.FriendRequestViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeSearchField(
-  groupchatList: List<GroupChat>,
-  friendrequestList: List<FriendRequest>,
-  userOptions: UserOptions
-) {
+fun HomeSearchField(groupchatList: List<GroupChat>, userOptions: UserOptions) {
+
+  val selectedFQTab = remember { mutableStateOf("Sent") }
+  val friendRequestViewModel: FriendRequestViewModel = viewModel()
+  var filteredFriendRequest: List<FriendRequest>
+  var filterRequest: FilterRequest? = null
+  var fqDropDownMenuMode: String = ""
+
   // Filter the group chat / friends  by the search text
   val filteredGroupChat =
     groupchatList.filter { it.name.contains(userOptions.searchText, ignoreCase = true) }
-  val filteredFriendRequest: List<FriendRequest> =
-    friendrequestList.filter { it.status.contains(userOptions.searchText, ignoreCase = true) }
 
   Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
     Text(
@@ -79,12 +90,65 @@ fun HomeSearchField(
           GroupChatCardList(items = filteredGroupChat)
         }
         "Friends" -> {
-          FriendRequestCardList(items = filteredFriendRequest, "")
+          FriendRequestTopTabBar(
+            selectedTab = selectedFQTab.value,
+            onTabSelected = { selectedFQTab.value = it }
+          )
+
+          when (selectedFQTab.value) {
+            "Sent" -> {
+              filterRequest =
+                FilterRequest(
+                  friendrequest =
+                    FriendRequestData(
+                      id = 0,
+                      status = "Pending",
+                      recipient = UserData(id = 0, username = "", email = "", password = ""),
+                      sender = UserData(id = 0, username = "", email = "Non empty", password = "")
+                    )
+                )
+              fqDropDownMenuMode = "CancelPendingFriendRequest"
+            }
+            "Awaiting" -> {
+              filterRequest =
+                FilterRequest(
+                  friendrequest =
+                    FriendRequestData(
+                      id = 0,
+                      status = "Pending",
+                      recipient =
+                        UserData(id = 0, username = "", email = "Non empty", password = ""),
+                      sender = UserData(id = 0, username = "", email = "", password = "")
+                    )
+                )
+              fqDropDownMenuMode = "AcceptRejectFriendInvitation"
+            }
+          }
+          friendRequestViewModel.fetchFriendRequests(filterRequest)
+          val friendRequestsListState = friendRequestViewModel.friendRequests.collectAsState()
+
+          filteredFriendRequest =
+            friendRequestsListState.value.filter {
+              it.status.contains(userOptions.searchText, ignoreCase = true)
+            }
+
+          FriendRequestCardList(items = filteredFriendRequest, fqDropDownMenuMode)
         }
         "Settings" -> {
           SettingsOptions()
         }
       }
+    }
+  }
+}
+
+@Composable
+fun FriendRequestTopTabBar(selectedTab: String, onTabSelected: (String) -> Unit) {
+  val tabOptions = listOf("Sent", "Awaiting", "Added friends")
+
+  TabRow(selectedTabIndex = tabOptions.indexOf(selectedTab)) {
+    tabOptions.forEachIndexed { index, text ->
+      Tab(selected = selectedTab == text, onClick = { onTabSelected(text) }, text = { Text(text) })
     }
   }
 }

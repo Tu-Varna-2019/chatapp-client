@@ -8,15 +8,12 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.LocalData
-import com.example.app_iliyan.model.User
 import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.navigation.HomeNavigationHandler
 import com.example.app_iliyan.view.components.dialog_box.SnackbarManager
 import com.example.app_iliyan.view.components.home.HomeNavigationBottomMenu
-import com.example.app_iliyan.view_model.FriendRequestViewModel
 import com.example.app_iliyan.view_model.HomeViewModel
 
 class HomeActivity : ComponentActivity() {
@@ -29,21 +26,13 @@ class HomeActivity : ComponentActivity() {
     val homeNavigationHandler = HomeNavigationHandler()
     val userOptionsObj = UserOptions("", "Chat")
     val homeViewModel: HomeViewModel by viewModels()
-    val friendRequestViewModel: FriendRequestViewModel by viewModels()
 
     setContent {
       val groupchatListState = homeViewModel.groupChats.collectAsState()
       homeViewModel.fetchGroupChats()
 
-      val friendrequestListState = friendRequestViewModel.friendRequests.collectAsState()
-      friendRequestViewModel.fetchFriendRequests()
-
       SnackbarManager.ScaffoldSnackbar {
-        HomeLayout(
-          groupchatList = groupchatListState.value,
-          friendrequestList = friendrequestListState.value,
-          userOptions = userOptionsObj
-        )
+        HomeLayout(groupchatList = groupchatListState.value, userOptions = userOptionsObj)
       }
     }
     // Settings logout event
@@ -64,16 +53,8 @@ class HomeActivity : ComponentActivity() {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeLayout(
-  groupchatList: List<GroupChat>,
-  friendrequestList: List<FriendRequest>,
-  userOptions: UserOptions = UserOptions("", "Chat")
-) {
-  HomeNavigationBottomMenu(
-    groupchatList = groupchatList,
-    friendrequestList = friendrequestList,
-    userOptions = userOptions
-  )
+fun HomeLayout(groupchatList: List<GroupChat>, userOptions: UserOptions = UserOptions("", "Chat")) {
+  HomeNavigationBottomMenu(groupchatList = groupchatList, userOptions = userOptions)
 }
 
 @Preview(showBackground = true)
@@ -89,15 +70,5 @@ fun HomeLayoutPreview() {
       GroupChat(0, "Group 6", listOf())
     )
 
-  val friendrequestList: List<FriendRequest> =
-    listOf(
-      FriendRequest(0, "Friend 1", User(0, "1", "1", "1"), User(0, "1", "1", "1")),
-      FriendRequest(0, "Friend 2", User(0, "2", "2", "2"), User(0, "1", "1", "1")),
-      FriendRequest(0, "Friend 3", User(0, "3", "3", "3"), User(0, "1", "1", "1")),
-      FriendRequest(0, "Friend 4", User(0, "4", "4", "4"), User(0, "1", "1", "1")),
-      FriendRequest(0, "Friend 5", User(0, "5", "5", "5"), User(0, "1", "1", "1")),
-      FriendRequest(0, "Friend 6", User(0, "6", "6", "6"), User(0, "1", "1", "1"))
-    )
-
-  HomeLayout(groupchatList = groupchatList, friendrequestList = friendrequestList)
+  HomeLayout(groupchatList = groupchatList)
 }

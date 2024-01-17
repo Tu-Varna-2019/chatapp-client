@@ -39,11 +39,40 @@ class FriendRequestViewModel : ViewModel(), ChatInterface {
     }
   }
 
-  suspend fun handleDeleteFriendRequestClick(deletedFriendRequest: FriendRequest) {
-    val isFriendRequestDeleted =
-      chatRepo.friendRequestRepo.deleteFriendRequest(deletedFriendRequest.id)
+  suspend fun handleDeleteFriendRequestClick(
+    event: String,
+    deletedFriendRequest: FriendRequest
+  ): String {
 
-    if (isFriendRequestDeleted)
+    val friendRequestDeleteMessage: String =
+      chatRepo.friendRequestRepo.handleFriendRequestOperation(event, deletedFriendRequest)
+
+    // Remove deleted friend request if no exception is raised
+    if (!friendRequestDeleteMessage.isEmpty())
       _friendRequests.value = _friendRequests.value.filterNot { it.id == deletedFriendRequest.id }
+
+    return friendRequestDeleteMessage
+  }
+
+  suspend fun handleFriendRequestOperation(
+    event: String,
+    updatedFriendRequestStatus: FriendRequest
+  ): String {
+
+    val friendRequestUpdateMessage: String =
+      chatRepo.friendRequestRepo.handleFriendRequestOperation(event, updatedFriendRequestStatus)
+
+    // Set updated status friend request if no exception is raised
+    if (!friendRequestUpdateMessage.isEmpty())
+      _friendRequests.value =
+        _friendRequests.value.map { friendRequest ->
+          if (friendRequest.id == updatedFriendRequestStatus.id) {
+            updatedFriendRequestStatus
+          } else {
+            friendRequest
+          }
+        }
+
+    return friendRequestUpdateMessage
   }
 }

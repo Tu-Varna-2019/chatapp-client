@@ -109,7 +109,7 @@ abstract class SharedRepo {
     return sendClientData(event, DataRequest(id = id.toString()))
   }
 
-  suspend fun sendAddFriendRequest(event: String, friendRequest: FriendRequest): ServerResponse {
+  suspend fun sendFriendRequest(event: String, friendRequest: FriendRequest): ServerResponse {
 
     return sendClientData(
       event,

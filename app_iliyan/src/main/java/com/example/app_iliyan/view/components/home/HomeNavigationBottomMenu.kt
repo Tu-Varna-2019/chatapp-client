@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.model.GroupChat
 import com.example.app_iliyan.model.state.UserOptions
 import com.example.app_iliyan.view.components.dialog_box.DialogAddGroupChat
@@ -41,11 +40,7 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeNavigationBottomMenu(
-  groupchatList: List<GroupChat>,
-  friendrequestList: List<FriendRequest>,
-  userOptions: UserOptions
-) {
+fun HomeNavigationBottomMenu(groupchatList: List<GroupChat>, userOptions: UserOptions) {
 
   val homeViewModel: HomeViewModel = viewModel()
   var showMenu by remember { mutableStateOf(false) }
@@ -151,10 +146,6 @@ fun HomeNavigationBottomMenu(
       }
     }
   ) {
-    HomeSearchField(
-      groupchatList = groupchatList,
-      friendrequestList = friendrequestList,
-      userOptions = userOptions
-    )
+    HomeSearchField(groupchatList = groupchatList, userOptions = userOptions)
   }
 }

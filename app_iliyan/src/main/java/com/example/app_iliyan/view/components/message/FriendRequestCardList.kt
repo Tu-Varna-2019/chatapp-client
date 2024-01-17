@@ -16,7 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -122,8 +124,14 @@ fun FriendRequestCard(item: FriendRequest, dropDownMenuMode: String, groupchatId
                 groupchatId
               )
             }
-            "RemoveMistakenlySentBySender" -> {
-              FRRemoveMistakenlySentBySenderDropDownMenu(
+            "CancelPendingFriendRequest" -> {
+              CancelPendingFriendRequestDropDownMenu(
+                PopupMenu.OnDismissListener { showMessageMenu.value = false },
+                clickedFQ.value
+              )
+            }
+            "AcceptRejectFriendInvitation" -> {
+              AcceptRejectFriendInvitationDropDownMenu(
                 PopupMenu.OnDismissListener { showMessageMenu.value = false },
                 clickedFQ.value
               )
@@ -172,7 +180,7 @@ fun FRAddUserToGroupDropDownMenu(
 }
 
 @Composable
-fun FRRemoveMistakenlySentBySenderDropDownMenu(
+fun CancelPendingFriendRequestDropDownMenu(
   OnDismissListener: PopupMenu.OnDismissListener,
   clickedMessage: FriendRequest
 ) {
@@ -192,11 +200,69 @@ fun FRRemoveMistakenlySentBySenderDropDownMenu(
         DropdownMenuItem(
           onClick = {
             CoroutineScope(Dispatchers.Main).launch {
-              friendRequestViewModel.handleDeleteFriendRequestClick(clickedMessage)
+              val message =
+                friendRequestViewModel.handleDeleteFriendRequestClick(
+                  "DeleteFriendRequest",
+                  clickedMessage
+                )
+              SnackbarManager.showSnackbar(message)
             }
           },
-          text = { Text("Delete") },
-          leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) }
+          text = { Text("Cancel") },
+          leadingIcon = { Icon(Icons.Filled.Close, contentDescription = null) }
+        )
+      }
+    }
+  }
+}
+
+@Composable
+fun AcceptRejectFriendInvitationDropDownMenu(
+  OnDismissListener: PopupMenu.OnDismissListener,
+  clickedMessage: FriendRequest
+) {
+
+  val friendRequestViewModel: FriendRequestViewModel = viewModel()
+
+  Box(contentAlignment = Alignment.Center) {
+    MaterialTheme(
+      colorScheme =
+        MaterialTheme.colorScheme.copy(surface = Color(red = 234, green = 221, blue = 255))
+    ) {
+      DropdownMenu(
+        expanded = true,
+        onDismissRequest = { OnDismissListener.onDismiss(null) },
+        modifier = Modifier.align(Alignment.TopEnd)
+      ) {
+        DropdownMenuItem(
+          onClick = {
+            CoroutineScope(Dispatchers.Main).launch {
+              clickedMessage.status = "Accepted"
+              val message =
+                friendRequestViewModel.handleFriendRequestOperation(
+                  "FriendRequestOperation",
+                  clickedMessage
+                )
+              SnackbarManager.showSnackbar(message)
+            }
+          },
+          text = { Text("Accept invitation") },
+          leadingIcon = { Icon(Icons.Filled.Check, contentDescription = null) }
+        )
+        DropdownMenuItem(
+          onClick = {
+            CoroutineScope(Dispatchers.Main).launch {
+              clickedMessage.status = "Rejected"
+              val message =
+                friendRequestViewModel.handleFriendRequestOperation(
+                  "FriendRequestOperation",
+                  clickedMessage
+                )
+              SnackbarManager.showSnackbar(message)
+            }
+          },
+          text = { Text("Reject invitation") },
+          leadingIcon = { Icon(Icons.Filled.Clear, contentDescription = null) }
         )
       }
     }
