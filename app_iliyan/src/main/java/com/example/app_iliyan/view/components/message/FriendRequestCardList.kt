@@ -136,6 +136,12 @@ fun FriendRequestCard(item: FriendRequest, dropDownMenuMode: String, groupchatId
                 clickedFQ.value
               )
             }
+            "RemoveAcceptedFriend" -> {
+              RemoveAcceptedFriendDropDownMenu(
+                PopupMenu.OnDismissListener { showMessageMenu.value = false },
+                clickedFQ.value
+              )
+            }
             else -> ""
           }
         }
@@ -262,6 +268,43 @@ fun AcceptRejectFriendInvitationDropDownMenu(
             }
           },
           text = { Text("Reject invitation") },
+          leadingIcon = { Icon(Icons.Filled.Clear, contentDescription = null) }
+        )
+      }
+    }
+  }
+}
+
+@Composable
+fun RemoveAcceptedFriendDropDownMenu(
+  OnDismissListener: PopupMenu.OnDismissListener,
+  clickedMessage: FriendRequest
+) {
+
+  val friendRequestViewModel: FriendRequestViewModel = viewModel()
+
+  Box(contentAlignment = Alignment.Center) {
+    MaterialTheme(
+      colorScheme =
+        MaterialTheme.colorScheme.copy(surface = Color(red = 234, green = 221, blue = 255))
+    ) {
+      DropdownMenu(
+        expanded = true,
+        onDismissRequest = { OnDismissListener.onDismiss(null) },
+        modifier = Modifier.align(Alignment.TopEnd)
+      ) {
+        DropdownMenuItem(
+          onClick = {
+            CoroutineScope(Dispatchers.Main).launch {
+              val message =
+                friendRequestViewModel.handleDeleteFriendRequestClick(
+                  "DeleteFriendRequest",
+                  clickedMessage
+                )
+              SnackbarManager.showSnackbar(message)
+            }
+          },
+          text = { Text("Remove from friend list") },
           leadingIcon = { Icon(Icons.Filled.Clear, contentDescription = null) }
         )
       }

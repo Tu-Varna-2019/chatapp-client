@@ -18,7 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -123,16 +126,36 @@ fun HomeSearchField(groupchatList: List<GroupChat>, userOptions: UserOptions) {
                 )
               fqDropDownMenuMode = "AcceptRejectFriendInvitation"
             }
+            "Added friends" -> {
+              filterRequest =
+                FilterRequest(
+                  friendrequest =
+                    FriendRequestData(
+                      id = 0,
+                      status = "Accepted",
+                      recipient = UserData(id = 0, username = "", email = "", password = ""),
+                      sender = UserData(id = 0, username = "", email = "", password = "")
+                    )
+                )
+              fqDropDownMenuMode = "RemoveAcceptedFriend"
+            }
           }
-          friendRequestViewModel.fetchFriendRequests(filterRequest)
+
+          LaunchedEffect(selectedFQTab.value) {
+            friendRequestViewModel.fetchFriendRequests(filterRequest)
+          }
+
           val friendRequestsListState = friendRequestViewModel.friendRequests.collectAsState()
 
-          filteredFriendRequest =
-            friendRequestsListState.value.filter {
-              it.status.contains(userOptions.searchText, ignoreCase = true)
+          val filteredFriendRequestDerived by remember {
+            derivedStateOf {
+              friendRequestsListState.value.filter {
+                it.status.contains(userOptions.searchText, ignoreCase = true)
+              }
             }
+          }
 
-          FriendRequestCardList(items = filteredFriendRequest, fqDropDownMenuMode)
+          FriendRequestCardList(items = filteredFriendRequestDerived, fqDropDownMenuMode)
         }
         "Settings" -> {
           SettingsOptions()

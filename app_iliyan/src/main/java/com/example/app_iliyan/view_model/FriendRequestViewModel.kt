@@ -8,10 +8,8 @@ import com.example.app_iliyan.model.FriendRequest
 import com.example.app_iliyan.repository.ChatInterface
 import com.example.app_iliyan.repository.ChatRepo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class FriendRequestViewModel : ViewModel(), ChatInterface {
@@ -22,19 +20,12 @@ class FriendRequestViewModel : ViewModel(), ChatInterface {
 
   fun fetchFriendRequests(filterRequest: FilterRequest? = null) {
     viewModelScope.launch(Dispatchers.Main) {
-      while (isActive) {
-        try {
-          // Friend request
-          val fetchFriendRequest = chatRepo.friendRequestRepo.getAllFriendRequests(filterRequest)
-          _friendRequests.value = fetchFriendRequest
-        } catch (e: Exception) {
-          Utils.logger.error(
-            "fetchFriendRequests",
-            "Error fetching group chats/friend requests!",
-            e
-          )
-        }
-        delay(Utils.SERVER_REQUEST_DELAY)
+      try {
+        // Friend request
+        val fetchFriendRequest = chatRepo.friendRequestRepo.getAllFriendRequests(filterRequest)
+        _friendRequests.value = fetchFriendRequest
+      } catch (e: Exception) {
+        Utils.logger.error("fetchFriendRequests", "Error fetching group chats/friend requests!", e)
       }
     }
   }
