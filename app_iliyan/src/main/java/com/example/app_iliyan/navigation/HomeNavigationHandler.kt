@@ -15,7 +15,7 @@ class HomeNavigationHandler {
   fun observeLogoutEvent(
     lifecycleOwner: LifecycleOwner,
     homeViewModel: HomeViewModel,
-    context: Context
+    context: Context,
   ) {
     homeViewModel.logoutEvent.observe(
       lifecycleOwner,
@@ -25,14 +25,14 @@ class HomeNavigationHandler {
           context.startActivity(intent)
           homeViewModel.logoutEvent.value = false
         }
-      }
+      },
     )
   }
 
   fun observeGotoMessageEvent(
     lifecycleOwner: LifecycleOwner,
     homeViewModel: HomeViewModel,
-    context: Context
+    context: Context,
   ) {
     homeViewModel.gotoMessageEvent.observe(
       lifecycleOwner,
@@ -42,7 +42,7 @@ class HomeNavigationHandler {
             GroupChatData(
               it.id,
               it.name ?: "",
-              ServerDataHandler.convertListUserToListUserData(it.users)
+              ServerDataHandler.convertListUserToListUserData(it.users),
             )
           }
 
@@ -52,9 +52,7 @@ class HomeNavigationHandler {
             Intent(context, MessageActivity::class.java).apply { putExtra("groupChat", json) }
           context.startActivity(intent)
         }
-        // #TODO: Create MutableStateFlow for this
-        // homeViewModel.gotoMessageEvent.value = null
-      }
+      },
     )
   }
 }

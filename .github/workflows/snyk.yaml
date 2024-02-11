@@ -1,4 +1,5 @@
-name: Snyk scan for Python
+name: Snyk scan for Kotlin
+
 on: push
 jobs:
   security:
