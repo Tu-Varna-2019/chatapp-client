@@ -1,4 +1,4 @@
-name: Snyk scan for Kotlin
+name: Snyk scan for Gradle
 
 on: push
 jobs:
@@ -6,6 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+        with:
+          args: snykResolvedDepsJson --project-dir=app_iliyan
+
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/gradle@master
         env:

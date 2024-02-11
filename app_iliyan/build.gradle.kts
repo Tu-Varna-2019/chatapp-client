@@ -9,7 +9,7 @@ sonar {
   properties {
     property(
       "sonar.projectKey",
-      "Tu-Varna-2019_Tu-Varna-Masters-Winter-AndroidKotlin-Project-Chat_AYwcmzPxkyMQ8V9j1VQJ"
+      "Tu-Varna-2019_Masters-Winter-Project-AndroidKotlin-ChatApp_AY2ZFGjuRPKtRuu3tSSl",
     )
   }
 }
