@@ -1,26 +1,30 @@
-name: Lint
+name: ktlint
 
-on: [ push, pull_request ]
+on:
+  pull_request:
+    paths:
+      - .github/workflows/ktlint.yml
+      - 'src/**/*.kt'
+      - '**.kts'
 
 jobs:
-  build:
-    name: Lint
+  ktlint:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: read
-      # report GitHub Actions status checks
-      statuses: write
+    inputs:
+      ktlint_version:
+        description: 'ktlint version'
+        required: true
+        default: '1.1.1'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+      - run: |
+          curl -sSLO https://github.com/pinterest/ktlint/releases/download/${{ inputs.ktlint_version }}/ktlint && chmod a+x ktlint && sudo mv ktlint /usr/local/bin/
+      - name: run ktlint
+        run: |
+          ktlint --reporter=checkstyle,output=build/ktlint-report.xml
+        continue-on-error: true
+      - uses: yutailang0119/action-ktlint@v3
         with:
-          # full git history to get the
-          fetch-depth: 0
-
-      - name: Super-linter
-        uses: super-linter/super-linter@v6.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          report-path: build/*.xml
+        continue-on-error: false
